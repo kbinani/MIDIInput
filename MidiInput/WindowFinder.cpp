@@ -1,3 +1,4 @@
+#include <iostream>
 #include "WindowFinder.h"
 
 using namespace std;
@@ -47,7 +48,10 @@ HWND WindowFinder::getMusicalEditor( HWND editorWindow ){
     return result;
 }
 
-HWND WindowFinder::getMusicalEditorComponent( HWND musicalEditor ){
+void WindowFinder::getComponentAndScroll( HWND musicalEditor, HWND *component, HWND *scroll ){
+	*scroll = NULL;
+	*component = NULL;
+
     vector<HWND> windows;
     WindowFinder::getWindows( musicalEditor, windows );
     vector<HWND>::iterator i = windows.begin();
@@ -57,33 +61,30 @@ HWND WindowFinder::getMusicalEditorComponent( HWND musicalEditor ){
         vector<HWND>::iterator j = childWindows.begin();
         for( ; j != childWindows.end(); j++ ){
             LONG_PTR result = GetWindowLongPtr( (*j), GWL_STYLE );
-            if( (result & SBS_HORZ) == SBS_HORZ ){
-                return (*i);
+            if( (result & SBS_VERT) != SBS_VERT ){
+				*scroll = (*j);
+				*component = (*i);
+                return;
             }
         }
     }
-    return NULL;
+    return;
+}
+
+HWND WindowFinder::getMusicalEditorComponent( HWND musicalEditor ){
+	HWND component, scroll;
+	WindowFinder::getComponentAndScroll( musicalEditor, &component, &scroll );
+	return component;
 }
 
 HWND WindowFinder::getHorizontalScroll(){
     HWND editorWindow = WindowFinder::getEditorWindow();
     HWND musicalEditor = WindowFinder::getMusicalEditor( editorWindow );
 
-    vector<HWND> windows;
-    WindowFinder::getWindows( musicalEditor, windows );
-    vector<HWND>::iterator i = windows.begin();
-    for( ; i != windows.end(); i++ ){
-        vector<HWND> childWindows;
-        WindowFinder::getWindows( (*i), childWindows );
-        vector<HWND>::iterator j = childWindows.begin();
-        for( ; j != childWindows.end(); j++ ){
-            LONG_PTR result = GetWindowLongPtr( (*j), GWL_STYLE );
-            if( (result & SBS_HORZ) == SBS_HORZ ){
-                return (*j);
-            }
-        }
-    }
-    return NULL;
+	HWND component, scroll;
+	WindowFinder::getComponentAndScroll( musicalEditor, &component, &scroll );
+
+	return scroll;
 }
 
 void WindowFinder::getWindows( HWND window, vector<HWND> &result ){
@@ -97,6 +98,34 @@ string WindowFinder::getTitle( HWND window ){
     string result = title;
     delete [] title;
     return result;
+}
+
+HWND WindowFinder::getForwardToolButton( HWND editorWindow ){
+	return WindowFinder::getToolButton( editorWindow, "tool_forward" );
+}
+
+HWND WindowFinder::getBackwardToolButton( HWND editorWindow ){
+	return WindowFinder::getToolButton( editorWindow, "tool_backward" );
+}
+
+HWND WindowFinder::getToolButton( HWND editor, string title ){
+	vector<HWND> level1;
+	WindowFinder::getWindows( editor, level1 );
+	for( vector<HWND>::iterator i = level1.begin(); i != level1.end(); i++ ){
+		vector<HWND> level2;
+		WindowFinder::getWindows( (*i), level2 );
+		for( vector<HWND>::iterator j = level2.begin(); j != level2.end(); j++ ){
+			vector<HWND> level3;
+			WindowFinder::getWindows( (*j), level3 );
+			for( vector<HWND>::iterator k = level3.begin(); k != level3.end(); k++ ){
+				string text = WindowFinder::getTitle( (*k) );
+				if( text == title ){
+					return (*k);
+				}
+			}
+		}
+	}
+	return NULL;
 }
 
 /*bool WindowFinder::getHorizontalScrollInfo( HWND scroll, LPSCROLLINFO info ){

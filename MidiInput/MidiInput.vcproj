@@ -183,6 +183,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Robot.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\WindowFinder.cpp"
 				>
 			</File>
@@ -194,6 +198,10 @@
 			>
 			<File
 				RelativePath=".\MidiInput.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Robot.h"
 				>
 			</File>
 			<File
