@@ -1,4 +1,6 @@
 #pragma comment( lib, "lua5.1.lib" )
+#pragma comment( lib, "QtCore4.lib" )
+#pragma comment( lib, "QtGui4.lib" )
 #include <windows.h>
 
 extern "C"{
@@ -10,11 +12,13 @@ extern "C"{
 #include <stdio.h>
 #include <iostream>
 #include "WindowFinder.h"
+#include "../MidiInputUi/MidiInputUi.h"
 
 using namespace std;
 
 #ifdef _DEBUG
     void main(){
+		MidiInputUi::doSomething();
         HWND scroll = WindowFinder::getHorizontalScroll();
 
         /*Type SCROLLINFO
@@ -59,7 +63,9 @@ End Type*/
 extern "C"{
     int test_func_a( lua_State *state )
     {
-        HWND editorWindow = WindowFinder::getHorizontalScroll();
+		MidiInputUi::doSomething();
+
+		HWND editorWindow = WindowFinder::getHorizontalScroll();
 
         int length = 100;
         char *foo = new char[length]();
