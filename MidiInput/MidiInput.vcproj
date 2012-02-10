@@ -62,7 +62,8 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="lua5.1.lib"
 				LinkIncremental="2"
-				IgnoreDefaultLibraryNames="LIBCMT;MSVCRT"
+				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames="MSVCRT;MSVCPRT"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -137,9 +138,9 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="lua5.1.lib"
 				LinkIncremental="1"
-				IgnoreDefaultLibraryNames="MSVCRT"
+				IgnoreDefaultLibraryNames="MSVCPRT;MSVCRT"
 				ModuleDefinitionFile="MidiInput.def"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -185,6 +186,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MidiInputReceiver.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Robot.cpp"
 				>
 			</File>
@@ -200,6 +205,10 @@
 			>
 			<File
 				RelativePath=".\MidiInput.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MidiInputReceiver.h"
 				>
 			</File>
 			<File

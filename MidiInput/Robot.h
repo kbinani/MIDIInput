@@ -3,19 +3,19 @@
 
 class Robot{
 public:
-	/**
-	 * 早送りボタンを押す
-	 */
-	static void forward();
+    /**
+     * 早送りボタンを押す
+     */
+    static void forward();
 
-	/**
-	 * 巻き戻しボタンを押す
-	 */
-	static void backward();
+    /**
+     * 巻き戻しボタンを押す
+     */
+    static void backward();
 
 private:
-	Robot(){
-	}
+    Robot(){
+    }
 };
 
 #endif

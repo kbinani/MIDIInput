@@ -1,2 +1,4 @@
 EXPORTS
-    test_func_a
+    showDialog
+    hasNext
+    next

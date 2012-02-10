@@ -7,40 +7,40 @@
 
 class WindowFinder{
 public:
-	/**
-	 * ピアノロールの水平スクロールバーのハンドルを取得する
-	 */
+    /**
+     * ピアノロールの水平スクロールバーのハンドルを取得する
+     */
     static HWND getHorizontalScroll();
 
-	/**
-	 * スクロールの情報を取得する
-	 */
+    /**
+     * スクロールの情報を取得する
+     */
     static void getScrollInfo( HWND scroll, LPSCROLLINFO info );
 
-	/**
-	 * エディタウィンドウのハンドルを取得する
-	 */
+    /**
+     * エディタウィンドウのハンドルを取得する
+     */
     static HWND getEditorWindow();
 
-	/**
-	 * Musical エディタのハンドルを取得する
-	 */
+    /**
+     * Musical エディタのハンドルを取得する
+     */
     static HWND getMusicalEditor( HWND editorWindow );
 
-	/**
-	 * Musical エディタ内の ContentPane のハンドルを取得する
-	 */
+    /**
+     * Musical エディタ内の ContentPane のハンドルを取得する
+     */
     static HWND getMusicalEditorComponent( HWND musicalEditor );
 
-	/**
-	 * 早送りボタンのハンドルを取得する
-	 */
-	static HWND getForwardToolButton( HWND editorWindow );
+    /**
+     * 早送りボタンのハンドルを取得する
+     */
+    static HWND getForwardToolButton( HWND editorWindow );
 
-	/**
-	 * 巻き戻しボタンのハンドルを取得する
-	 */
-	static HWND getBackwardToolButton( HWND editorWindow );
+    /**
+     * 巻き戻しボタンのハンドルを取得する
+     */
+    static HWND getBackwardToolButton( HWND editorWindow );
 
 private:
     WindowFinder(){
@@ -58,12 +58,12 @@ private:
 
     static BOOL CALLBACK enumerationCallback( HWND hwnd, LPARAM lParam );
 
-	/**
-	 * Musical Editor の中に配置されている ContentPane 的なコンポーネントと、
-	 * 水平スクロールバーのコンポーネントのハンドルを取得する
-	 */
-	static void getComponentAndScroll( HWND musicalEditor, HWND *component, HWND *scroll );
+    /**
+     * Musical Editor の中に配置されている ContentPane 的なコンポーネントと、
+     * 水平スクロールバーのコンポーネントのハンドルを取得する
+     */
+    static void getComponentAndScroll( HWND musicalEditor, HWND *component, HWND *scroll );
 
-	static HWND getToolButton( HWND editorWindow, std::string title );
+    static HWND getToolButton( HWND editorWindow, std::string title );
 };
 #endif
