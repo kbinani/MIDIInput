@@ -9,12 +9,14 @@ TEMPLATE = lib
 CONFIG += staticlib
 
 SOURCES += \
+    MidiInputUi.cpp \
     Dialog.cpp \
-    MidiInputUi.cpp
+    DialogRunner.cpp
 
 HEADERS += \
+    MidiInputUi.h \
     Dialog.h \
-    MidiInputUi.h
+    DialogRunner.h
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib

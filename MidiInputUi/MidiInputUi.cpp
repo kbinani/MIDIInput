@@ -1,17 +1,10 @@
 #include <QtGui>
 #include "MidiInputUi.h"
 #include "Dialog.h"
+#include "DialogRunner.h"
 
-MidiInputUi::MidiInputUi()
+void MidiInputUi::showDialog()
 {
-}
-
-void MidiInputUi::doSomething()
-{
-    int argc = 0;
-    QApplication app( argc, NULL );
-    Dialog d( (QWidget *)0 );
-    d.show();
-    app.exec();
-    return;
+    DialogRunner *dialogRunner = new DialogRunner();
+    dialogRunner->start();
 }

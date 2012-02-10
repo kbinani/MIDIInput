@@ -1,12 +1,16 @@
 #ifndef MIDI_INPUT_UI_H
 #define MIDI_INPUT_UI_H
 
+#include <vector>
+#include <string>
 
 class MidiInputUi {
 public:
-    MidiInputUi();
+    static void showDialog();
 
-    static void doSomething();
+private:
+    MidiInputUi(){
+    }
 };
 
 #endif // MIDI_INPUT_UI_H
