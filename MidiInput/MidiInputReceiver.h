@@ -3,7 +3,7 @@
 
 class MidiInputReceiver{
 public:
-    void send( unsigned char b1, unsigned char b2, unsigned char b3 = 0 );
+    virtual void send( unsigned char b1, unsigned char b2, unsigned char b3 = 0 ) = 0;
 };
 
 #endif

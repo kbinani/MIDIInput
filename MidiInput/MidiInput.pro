@@ -4,17 +4,17 @@
 #
 #-------------------------------------------------
 
-TARGET = MidiInputUi
+TARGET = MidiInput
 TEMPLATE = lib
 
 SOURCES += \
     Dialog.cpp \
     DialogRunner.cpp \
     Robot.cpp \
-    MidiInputReceiver.cpp \
     MidiInput.cpp \
     WindowFinder.cpp \
-    main.cpp
+    main.cpp \
+    DialogListener.cpp
 
 HEADERS += \
     Dialog.h \
@@ -22,7 +22,8 @@ HEADERS += \
     MidiInputReceiver.h \
     MidiInput.h \
     WindowFinder.h \
-    Robot.h
+    Robot.h \
+    DialogListener.h
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib
@@ -43,3 +44,8 @@ LIBS += \
 
 INCLUDEPATH += \
     "C:\lua5_1_4_Sources\lua5.1\include"
+
+OTHER_FILES +=
+
+RESOURCES += \
+    MidiInput.qrc

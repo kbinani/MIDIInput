@@ -14,17 +14,28 @@ extern "C"{
 
 using namespace std;
 
-extern "C" __declspec(dllexport) int showDialog( lua_State *state ){
-    DialogRunner *dialogRunner = new DialogRunner();
-    dialogRunner->start();
-    return 0;
-}
+DialogRunner *dialogRunner = NULL;
+DialogListener *dialogListener = NULL;
 
 /**
  * 次のコマンドがあるかどうかを取得する
  */
 extern "C" __declspec(dllexport) int hasNext( lua_State *state ){
-    lua_pushboolean( state, TRUE );
+    if( !dialogRunner || !dialogListener ){
+        dialogListener = new DialogListener();
+        dialogRunner = new DialogRunner( dialogListener );
+        dialogRunner->start();
+    }
+    bool isFinished = dialogRunner->isFinished();
+
+    if( isFinished ){
+        delete dialogListener;
+        delete dialogRunner;
+        dialogListener = NULL;
+        dialogRunner = NULL;
+    }
+
+    lua_pushboolean( state, isFinished ? FALSE : TRUE );
     return 1;
 }
 
