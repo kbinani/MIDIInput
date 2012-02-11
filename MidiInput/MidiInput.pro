@@ -5,7 +5,9 @@
 #-------------------------------------------------
 
 TARGET = MidiInput
-TEMPLATE = lib
+TEMPLATE = app
+
+QT       += core gui
 
 SOURCES += \
     Dialog.cpp \
@@ -14,7 +16,9 @@ SOURCES += \
     MidiInput.cpp \
     WindowFinder.cpp \
     main.cpp \
-    DialogListener.cpp
+    DialogListener.cpp \
+    PianorollItem.cpp \
+    Pianoroll.cpp
 
 HEADERS += \
     Dialog.h \
@@ -23,7 +27,9 @@ HEADERS += \
     MidiInput.h \
     WindowFinder.h \
     Robot.h \
-    DialogListener.h
+    DialogListener.h \
+    PianorollItem.h \
+    Pianoroll.h
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib
@@ -34,18 +40,19 @@ unix:!symbian {
 }
 
 FORMS += \
-    Dialog.ui
+    Dialog.ui \
+    Pianoroll.ui
 
-LIBS += \
+win32:LIBS += \
     -L"C:\lua5_1_4_Sources\lua5.1\lib\static" \
     -lwinmm \
     -luser32 \
     -llua5.1
 
-INCLUDEPATH += \
-    "C:\lua5_1_4_Sources\lua5.1\include"
+unix:LIBS += -llua
 
-OTHER_FILES +=
+win32:INCLUDEPATH += \
+    "C:\lua5_1_4_Sources\lua5.1\include"
 
 RESOURCES += \
     MidiInput.qrc

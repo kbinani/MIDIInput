@@ -3,6 +3,7 @@
 #include "QtGui"
 #include "Dialog.h"
 #include "DialogListener.h"
+#include "Pianoroll.h"
 
 DialogRunner::DialogRunner( DialogListener *listener ){
     this->listener = listener;
