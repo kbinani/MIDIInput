@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>res/note016.png</file>
+        <file>res/icon.ico</file>
+        <file>res/note001.png</file>
+        <file>res/note002.png</file>
+        <file>res/note004.png</file>
+        <file>res/note008.png</file>
+        <file>res/rest016.png</file>
+        <file>res/rest001.png</file>
+        <file>res/rest002.png</file>
+        <file>res/rest004.png</file>
+        <file>res/rest008.png</file>
+    </qresource>
+</RCC>
