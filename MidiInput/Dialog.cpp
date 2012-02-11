@@ -4,11 +4,11 @@
 
 using namespace std;
 
-Dialog::Dialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::Dialog)
+Dialog::Dialog( QWidget *parent ) :
+    QDialog( parent ),
+    ui( new Ui::Dialog )
 {
-    ui->setupUi(this);
+    ui->setupUi( this );
 
     int count = midiInGetNumDevs();
     for( int i = 0; i < count; i++ ){

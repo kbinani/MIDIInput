@@ -6,17 +6,23 @@
 
 TARGET = MidiInputUi
 TEMPLATE = lib
-CONFIG += staticlib
 
 SOURCES += \
-    MidiInputUi.cpp \
     Dialog.cpp \
-    DialogRunner.cpp
+    DialogRunner.cpp \
+    Robot.cpp \
+    MidiInputReceiver.cpp \
+    MidiInput.cpp \
+    WindowFinder.cpp \
+    main.cpp
 
 HEADERS += \
-    MidiInputUi.h \
     Dialog.h \
-    DialogRunner.h
+    DialogRunner.h \
+    MidiInputReceiver.h \
+    MidiInput.h \
+    WindowFinder.h \
+    Robot.h
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib
@@ -28,3 +34,12 @@ unix:!symbian {
 
 FORMS += \
     Dialog.ui
+
+LIBS += \
+    -L"C:\lua5_1_4_Sources\lua5.1\lib\static" \
+    -lwinmm \
+    -luser32 \
+    -llua5.1
+
+INCLUDEPATH += \
+    "C:\lua5_1_4_Sources\lua5.1\include"
