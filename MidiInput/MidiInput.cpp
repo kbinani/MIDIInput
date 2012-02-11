@@ -6,6 +6,12 @@
 using namespace std;
 
 MidiInputReceiver *MidiInput::receiver = NULL;
+
+void MidiInput::setReceiver( MidiInputReceiver *aReceiver ){
+    receiver = aReceiver;
+}
+
+#ifdef WIN32
 HMIDIIN MidiInput::deviceHandle = NULL;
 
 int MidiInput::getDeviceCount(){
@@ -31,10 +37,6 @@ void MidiInput::stop( int index ){
     midiInStop( deviceHandle );
     midiInClose( deviceHandle );
     deviceHandle = NULL;
-}
-
-void MidiInput::setReceiver( MidiInputReceiver *aReceiver ){
-    receiver = aReceiver;
 }
 
 void CALLBACK MidiInput::receive( HMIDIIN hMidiIn, UINT wMsg, DWORD_PTR dwInstance, DWORD_PTR dwParam1, DWORD_PTR dwParam2 ){
@@ -86,3 +88,24 @@ void CALLBACK MidiInput::receive( HMIDIIN hMidiIn, UINT wMsg, DWORD_PTR dwInstan
         }
     }
 }
+#else
+
+int MidiInput::getDeviceCount(){
+    //TODO:
+    return 0;
+}
+
+const string MidiInput::getDeviceName( int index ){
+    //TODO:
+    return "";
+}
+
+void MidiInput::stop( int index ){
+    //TODO:
+}
+
+void MidiInput::start( int index ){
+    //TODO:
+}
+
+#endif

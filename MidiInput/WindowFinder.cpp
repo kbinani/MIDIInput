@@ -1,6 +1,8 @@
 #include <iostream>
 #include "WindowFinder.h"
 
+#ifdef WIN32
+
 using namespace std;
 
 void WindowFinder::getScrollInfo( HWND scroll, LPSCROLLINFO info ){
@@ -143,3 +145,5 @@ BOOL CALLBACK WindowFinder::enumerationCallback( HWND hwnd, LPARAM lParam ){
     result->push_back( hwnd );
     return TRUE;
 }
+
+#endif

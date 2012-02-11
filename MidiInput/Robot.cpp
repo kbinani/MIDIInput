@@ -1,6 +1,8 @@
 #include "Robot.h"
 #include "WindowFinder.h"
 
+#ifdef WIN32
+
 void Robot::forward(){
     HWND editor = WindowFinder::getEditorWindow();
     HWND button = WindowFinder::getForwardToolButton( editor );
@@ -18,3 +20,5 @@ void Robot::backward(){
     PostMessage( button, WM_LBUTTONDOWN, wParam, lParam );
     PostMessage( button, WM_LBUTTONUP, wParam, lParam );
 }
+
+#endif

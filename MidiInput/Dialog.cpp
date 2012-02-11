@@ -1,4 +1,3 @@
-#include <windows.h>
 #include "MidiInput.h"
 #include "Dialog.h"
 #include "ui_Dialog.h"
@@ -26,7 +25,6 @@ Dialog::Dialog( DialogListener *listener, QWidget *parent ) :
         ui->comboBox->setEnabled( true );
         ui->pushButtonStart->setEnabled( true );
     }
-    ui->stackedWidget->setCurrentIndex( 0 );
 }
 
 Dialog::~Dialog()
@@ -38,7 +36,6 @@ void Dialog::on_pushButtonStart_clicked()
 {
     int channel = ui->comboBox->currentIndex();
     if( 0 <= channel && channel < MidiInput::getDeviceCount() ){
-        ui->stackedWidget->setCurrentIndex( 1 );
         this->listener->inputStartRequired( channel );
     }
 }
@@ -46,5 +43,4 @@ void Dialog::on_pushButtonStart_clicked()
 void Dialog::on_pushButtonStop_clicked()
 {
     this->listener->inputStopRequired();
-    ui->stackedWidget->setCurrentIndex( 0 );
 }

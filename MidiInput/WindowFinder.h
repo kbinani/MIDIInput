@@ -1,6 +1,7 @@
 #ifndef __midiinput_WindowFinder_h__
 #define __midiinput_WindowFinder_h__
 
+#ifdef WIN32
 #include <windows.h>
 #include <vector>
 #include <string>
@@ -66,4 +67,5 @@ private:
 
     static HWND getToolButton( HWND editorWindow, std::string title );
 };
+#endif
 #endif
