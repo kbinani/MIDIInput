@@ -13,12 +13,18 @@ Dialog::Dialog( DialogListener *listener, QWidget *parent ) :
 
     this->listener = listener;
 
+    ui->pushButtonStart->setEnabled( false );
     ui->comboBox->clear();
-    ui->comboBox->addItem( "" );
+    ui->comboBox->setEnabled( false );
+
     int count = MidiInput::getDeviceCount();
     for( int i = 0; i < count; i++ ){
         string name = MidiInput::getDeviceName( i );
         ui->comboBox->addItem( QString::fromStdString( name ) );
+    }
+    if( ui->comboBox->count() > 0 ){
+        ui->comboBox->setEnabled( true );
+        ui->pushButtonStart->setEnabled( true );
     }
     ui->stackedWidget->setCurrentIndex( 0 );
 }
@@ -30,10 +36,15 @@ Dialog::~Dialog()
 
 void Dialog::on_pushButtonStart_clicked()
 {
-    ui->stackedWidget->setCurrentIndex( 1 );
+    int channel = ui->comboBox->currentIndex();
+    if( 0 <= channel && channel < MidiInput::getDeviceCount() ){
+        ui->stackedWidget->setCurrentIndex( 1 );
+        this->listener->inputStartRequired( channel );
+    }
 }
 
 void Dialog::on_pushButtonStop_clicked()
 {
+    this->listener->inputStopRequired();
     ui->stackedWidget->setCurrentIndex( 0 );
 }

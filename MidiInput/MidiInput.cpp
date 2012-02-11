@@ -21,14 +21,18 @@ const string MidiInput::getDeviceName( int index ){
 }
 
 void MidiInput::start( int index ){
-    if( !MidiInput::deviceHandle ){
-        midiInOpen( &MidiInput::deviceHandle, index, (DWORD_PTR)MidiInput::receive, NULL, CALLBACK_FUNCTION );
+    if( !deviceHandle ){
+        midiInOpen( &deviceHandle, index, (DWORD_PTR)MidiInput::receive, NULL, CALLBACK_FUNCTION );
     }
-    midiInStart( MidiInput::deviceHandle );
+    midiInStart( deviceHandle );
 }
 
-void MidiInput::setReceiver( MidiInputReceiver *receiver ){
-    MidiInput::receiver = receiver;
+void MidiInput::stop( int index ){
+    midiInStop( deviceHandle );
+}
+
+void MidiInput::setReceiver( MidiInputReceiver *aReceiver ){
+    receiver = aReceiver;
 }
 
 void CALLBACK MidiInput::receive( HMIDIIN hMidiIn, UINT wMsg, DWORD_PTR dwInstance, DWORD_PTR dwParam1, DWORD_PTR dwParam2 ){
@@ -47,8 +51,8 @@ void CALLBACK MidiInput::receive( HMIDIIN hMidiIn, UINT wMsg, DWORD_PTR dwInstan
                 case 0xa0:
                 case 0xb0:
                 case 0xe0:{
-                    if( MidiInput::receiver ){
-                        MidiInput::receiver->send(
+                    if( receiver ){
+                        receiver->send(
                             (unsigned char)(receive & 0xff),
                             (unsigned char)((receive & 0xffff) >> 8),
                             (unsigned char)((receive & ((2 << 24) - 1)) >> 16)
@@ -58,8 +62,8 @@ void CALLBACK MidiInput::receive( HMIDIIN hMidiIn, UINT wMsg, DWORD_PTR dwInstan
                 }
                 case 0xc0:
                 case 0xd0:{
-                    if( MidiInput::receiver ){
-                        MidiInput::receiver->send(
+                    if( receiver ){
+                        receiver->send(
                             (unsigned char)( receive & 0xff ),
                             (unsigned char)((receive & 0xffff) >> 8)
                         );

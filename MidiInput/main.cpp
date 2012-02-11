@@ -22,6 +22,12 @@ DialogListener *dialogListener = NULL;
  */
 extern "C" __declspec(dllexport) int hasNext( lua_State *state ){
     if( !dialogRunner || !dialogListener ){
+        if( dialogRunner ){
+            delete dialogRunner;
+        }
+        if( dialogListener ){
+            delete dialogListener;
+        }
         dialogListener = new DialogListener();
         dialogRunner = new DialogRunner( dialogListener );
         dialogRunner->start();
@@ -43,13 +49,10 @@ extern "C" __declspec(dllexport) int hasNext( lua_State *state ){
  * 次のコマンド文字列を取得する
  */
 extern "C" __declspec(dllexport) int next( lua_State *state ){
-    Sleep( 1000 );
-    static int i;
-    i++;
-    char *foo = new char[100]();
-    sprintf( foo, "%d", i );
-
-    lua_pushstring( state, (const char *)foo );
-    delete [] foo;
+    while( !dialogListener->hasNext() && !dialogRunner->isFinished() ){
+        Sleep( 5 );
+    }
+    string command = dialogListener->get();
+    lua_pushstring( state,  command.c_str() );
     return 1;
 }
