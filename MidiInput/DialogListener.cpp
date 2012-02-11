@@ -21,9 +21,20 @@ void DialogListener::inputStopRequired(){
 }
 
 void DialogListener::send( unsigned char b1, unsigned char b2, unsigned char b3 ){
-    ostringstream oss;
-    oss << hex << "0x" << (int)b1 << " 0x" << (int)b2 << " 0x" << (int)b3;
-    this->queue.push( oss.str() );
+    int command = (b1 & 0xF0);
+    if( command == 0x90 && b3 != 0 ){
+        int length = 480;
+        int position = 1920;
+        bool isRest = false;
+
+        ostringstream oss;
+        oss << "PUT " << (isRest ? "REST" : "NOTE") << " LENGTH " << length;
+        if( !isRest ){
+            oss << " PITCH " << (int)b2;
+        }
+        oss << " AT " << position;
+        this->queue.push( oss.str() );
+    }
 }
 
 void DialogListener::clearQueue(){

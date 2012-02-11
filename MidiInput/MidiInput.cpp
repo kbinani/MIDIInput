@@ -29,6 +29,8 @@ void MidiInput::start( int index ){
 
 void MidiInput::stop( int index ){
     midiInStop( deviceHandle );
+    midiInClose( deviceHandle );
+    deviceHandle = NULL;
 }
 
 void MidiInput::setReceiver( MidiInputReceiver *aReceiver ){
