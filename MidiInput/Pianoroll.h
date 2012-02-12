@@ -13,9 +13,31 @@ class Pianoroll : public QWidget
 {
     Q_OBJECT
 
+public:
+    static const int DEFAULT_TRACK_HEIGHT = 14;
+
 private:
-    std::vector<PianorollItem *> *items;
     Ui::Pianoroll *ui;
+
+    /**
+     * 描画されるアイテムの一覧
+     */
+    std::vector<PianorollItem *> *items;
+
+    /**
+     * 鍵盤の表示幅
+     */
+    int keyWidth;
+
+    /**
+     * ノートの描画高さ
+     */
+    int trackHeight;
+
+    /**
+     * 鍵盤の音の名前(C4など)
+     */
+    QString keyNames[128];
 
 public:
     explicit Pianoroll(QWidget *parent = 0);
@@ -25,6 +47,11 @@ public:
 
 private:
     QRect getVisibleArea();
+
+    /**
+     * 鍵盤を描画する
+     */
+    void paintKeyboard( QPainter *g, QRect, QRect );
 };
 
 #endif // PIANOROLL_H
