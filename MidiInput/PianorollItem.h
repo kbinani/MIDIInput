@@ -6,10 +6,29 @@
 class PianorollItem
 {
 public:
-    int x;
-    int y;
-    int width;
+    /**
+     * tick 単位の時刻
+     */
+    int tick;
+
+    /**
+     * ノート番号
+     */
+    int noteNumber;
+
+    /**
+     * tick 単位の長さ
+     */
+    int length;
+
+    /**
+     * 歌詞
+     */
     std::string phrase;
+
+    /**
+     * 発音記号
+     */
     std::string symbols;
 
 public:
