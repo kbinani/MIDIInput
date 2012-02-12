@@ -17,6 +17,8 @@ Dialog::Dialog( DialogListener *listener, QWidget *parent ) :
     ui->comboBox->clear();
     ui->comboBox->setEnabled( false );
 
+    this->setWindowFlags( Qt::Window );
+
     int count = MidiInput::getDeviceCount();
     for( int i = 0; i < count; i++ ){
         string name = MidiInput::getDeviceName( i );
