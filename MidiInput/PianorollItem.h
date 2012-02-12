@@ -9,7 +9,7 @@ public:
     /**
      * tick 単位の時刻
      */
-    int tick;
+    long int tick;
 
     /**
      * ノート番号

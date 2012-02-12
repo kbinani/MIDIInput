@@ -14,6 +14,7 @@ Pianoroll::Pianoroll(QWidget *parent) :
     this->items = NULL;
     this->keyWidth = 68;
     this->trackHeight = 14;
+    this->pixelPerTick = 0.2;
 
     // キーボードのキーの音名を作成
     char *names[] = { "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B" };
@@ -39,6 +40,8 @@ void Pianoroll::paintEvent( QPaintEvent * ){
 
     QRect geometry = this->geometry();
     paintBackground( &p, visibleArea );
+
+    paintItems( &p, visibleArea );
 
     paintKeyboard( &p, geometry, visibleArea );
 }
@@ -83,6 +86,37 @@ void Pianoroll::paintBackground( QPainter *g, QRect visibleArea ){
 
         if( y < 0 ){
             break;
+        }
+    }
+}
+
+void Pianoroll::paintItems( QPainter *g, QRect visibleArea ){
+    int count = this->items->size();
+    int height = trackHeight - 1;
+
+    QColor fillColor = QColor( 181, 220, 86 );
+    g->setPen( QColor( 125, 123, 124 ) );
+
+    int visibleMinX = visibleArea.x() + keyWidth;
+    int visibleMaxX = visibleArea.x() + visibleArea.width();
+    int visibleMinY = visibleArea.y();
+    int visibleMaxY = visibleArea.y() + visibleArea.height();
+
+    for( int i = 0; i < count; i++ ){
+        PianorollItem *item = items->at( i );
+        int x = getXFromTick( item->tick );
+        int width = getXFromTick( item->tick + item->length ) - x;
+
+        if( visibleMinX <= x + width && x <= visibleMaxX ){
+            int y = getYFromNoteNumber( item->noteNumber ) + 1;
+            if( visibleMinY <= y + height && y <= visibleMaxY ){
+                g->fillRect( x, y, width, height, fillColor );
+                g->drawRect( x, y, width, height );
+
+                g->setPen( QColor( 0, 0, 0 ) );
+                g->drawText( x + 1, y + trackHeight - 2,
+                             QString::fromUtf8( (item->phrase + " [" + item->symbols + "]").c_str() ) );
+            }
         }
     }
 }
@@ -143,4 +177,12 @@ QRect Pianoroll::getVisibleArea()
     int width = scroll->width();
     int height = scroll->height();
     return QRect( x, y, width, height );
+}
+
+int Pianoroll::getXFromTick( long int tick ){
+    return (int)(tick * pixelPerTick);
+}
+
+int Pianoroll::getYFromNoteNumber( int noteNumber ){
+    return (127 - noteNumber) * trackHeight;
 }
