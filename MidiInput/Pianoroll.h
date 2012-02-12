@@ -48,10 +48,12 @@ public:
 private:
     QRect getVisibleArea();
 
+    void paintBackground( QPainter *g, QRect visibleArea );
+
     /**
      * 鍵盤を描画する
      */
-    void paintKeyboard( QPainter *g, QRect, QRect );
+    void paintKeyboard( QPainter *g, QRect, QRect visibleArea );
 };
 
 #endif // PIANOROLL_H

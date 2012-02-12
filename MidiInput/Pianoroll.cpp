@@ -35,46 +35,72 @@ Pianoroll::~Pianoroll()
 void Pianoroll::paintEvent( QPaintEvent * ){
     QPainter p( this );
 
+    QRect visibleArea = this->getVisibleArea();
+
+    QRect geometry = this->geometry();
+    paintBackground( &p, visibleArea );
+    paintKeyboard( &p, geometry, visibleArea );
+}
+
+void Pianoroll::paintBackground( QPainter *g, QRect visibleArea ){
+    // 背景
     int width = this->width();
     int height = this->height();
-    QRect rect = this->getVisibleArea();
+    g->fillRect( 0, 0, width, height, QColor( 240, 240, 240 ) );
 
-    paintKeyboard( &p, geometry(), rect );
+    // 黒鍵
+    int y = 128 * trackHeight;
+    int modura = -1;
+    for( int noteNumber = 0; noteNumber < 128; noteNumber++ ){
+        y -= trackHeight;
+        modura++;
 
-    int margin = 10;
-    p.fillRect( rect.x() + margin, rect.y() + margin, rect.width() - 2 * margin, rect.height() - 2 * margin, QColor( 200, 200, 200 ) );
-    char text[5120];
-    sprintf( text, "{x=%d, y=%d, width=%d, height=%d}", rect.x(), rect.y(), rect.width(), rect.height() );
-    p.drawText( 200, 200, text );
+        if( modura == 12 ){
+            modura = 0;
+        }
+
+        if( visibleArea.y() + visibleArea.height() < y ){
+            continue;
+        }
+        if( modura == 1 || modura == 3 || modura == 6 || modura == 8 || modura == 10 ){
+            g->fillRect(
+                visibleArea.x() + keyWidth,
+                y,
+                visibleArea.width() - keyWidth,
+                trackHeight + 1,
+                QColor( 212, 212, 212 )
+            );
+        }
+        if( y < 0 ){
+            break;
+        }
+    }
 }
 
 void Pianoroll::paintKeyboard( QPainter *g, QRect geometry, QRect visibleArea ){
-    if( visibleArea.x() < keyWidth ){
-        g->fillRect( 0, 0, keyWidth, geometry.height(), QColor( 240, 240, 240 ) );
-        int y = 128 * trackHeight;
-        int dy = -trackHeight;
-        int modura = -1;
-        int order = -2;
-        QColor keyNameColor = QColor( 72, 77, 98 );
-        QColor blackKeyColor = QColor( 125, 123, 124 );
-        for( int noteNumber = 0; noteNumber < 128; noteNumber++ ){
-            y += dy;
-            modura++;
-            if( modura == 12 ){
-                modura = 0;
-                order++;
-            }
+    g->fillRect( visibleArea.x(), visibleArea.y(), keyWidth, visibleArea.height(), QColor( 240, 240, 240 ) );
+    int y = 128 * trackHeight;
+    int modura = -1;
+    int order = -2;
+    QColor keyNameColor = QColor( 72, 77, 98 );
+    QColor blackKeyColor = QColor( 125, 123, 124 );
+    for( int noteNumber = 0; noteNumber < 128; noteNumber++ ){
+        y -= trackHeight;
+        modura++;
+        if( modura == 12 ){
+            modura = 0;
+            order++;
+        }
 
-            // C4 などの表示を描画
-            if( modura == 0 ){
-                g->setPen( keyNameColor );
-                g->drawText( 42, y + trackHeight, keyNames[noteNumber] );
-            }
+        // C4 などの表示を描画
+        if( modura == 0 ){
+            g->setPen( keyNameColor );
+            g->drawText( visibleArea.x() + 42, y + trackHeight, keyNames[noteNumber] );
+        }
 
-            // 黒鍵を描く
-            if( modura == 1 || modura == 3 || modura == 6 || modura == 8 || modura == 10 ){
-                g->fillRect( 0, y, 34, trackHeight, blackKeyColor );
-            }
+        // 黒鍵を描く
+        if( modura == 1 || modura == 3 || modura == 6 || modura == 8 || modura == 10 ){
+            g->fillRect( visibleArea.x(), y, 34, trackHeight, blackKeyColor );
         }
     }
 }
