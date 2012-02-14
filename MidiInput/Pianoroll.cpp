@@ -5,6 +5,7 @@
 #include "ui_Pianoroll.h"
 
 using namespace std;
+using namespace cadencii::vsq;
 
 Pianoroll::Pianoroll(QWidget *parent) :
     QWidget(parent),
@@ -15,6 +16,9 @@ Pianoroll::Pianoroll(QWidget *parent) :
     this->keyWidth = 68;
     this->trackHeight = 14;
     this->pixelPerTick = 0.2;
+
+    this->defaultTimesigList.push( Timesig( 4, 4, 0 ) );
+    this->measureLineIterator = new MeasureLineIterator( &defaultTimesigList );
 
     // キーボードのキーの音名を作成
     char *names[] = { "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B" };
@@ -40,6 +44,8 @@ void Pianoroll::paintEvent( QPaintEvent * ){
 
     QRect geometry = this->geometry();
     paintBackground( &p, visibleArea );
+
+    paintMeasureLines( &p, visibleArea );
 
     paintItems( &p, visibleArea );
 
@@ -91,6 +97,9 @@ void Pianoroll::paintBackground( QPainter *g, QRect visibleArea ){
 }
 
 void Pianoroll::paintItems( QPainter *g, QRect visibleArea ){
+    if( items == NULL ){
+        return;
+    }
     int count = this->items->size();
     int height = trackHeight - 1;
 
@@ -164,8 +173,42 @@ void Pianoroll::paintKeyboard( QPainter *g, QRect geometry, QRect visibleArea ){
                  visibleArea.y() + visibleArea.height() );
 }
 
-void Pianoroll::setItems( std::vector<PianorollItem *> *items ){
+void Pianoroll::setItems( std::vector<PianorollItem *> *items, TimesigList *timesigList ){
     this->items = items;
+    this->timesigList = timesigList;
+    if( this->measureLineIterator ){
+        delete this->measureLineIterator;
+    }
+    this->measureLineIterator = new MeasureLineIterator( this->timesigList );
+}
+
+void Pianoroll::paintMeasureLines( QPainter *g, QRect visibleArea )
+{
+    int top = visibleArea.y();
+    int bottom = top + visibleArea.height();
+    int left = visibleArea.x();
+    int right = left + visibleArea.width();
+    tick_t tickAtScreenRight = (tick_t)getTickFromX( right );
+    measureLineIterator->reset( tickAtScreenRight );
+
+    QColor barColor( 161, 157, 136 );
+    QColor beatColor( 209, 204, 172 );
+    while( measureLineIterator->hasNext() ){
+        MeasureLine line = measureLineIterator->next();
+        int x = getXFromTick( line.tick );
+        if( x < left ){
+            continue;
+        }else if( right < x ){
+            break;
+        }
+        if( line.isBorder ){
+            g->setPen( barColor );
+        }
+        g->drawLine( x, top, x, bottom );
+        if( line.isBorder ){
+            g->setPen( beatColor );
+        }
+    }
 }
 
 QRect Pianoroll::getVisibleArea()
@@ -180,9 +223,14 @@ QRect Pianoroll::getVisibleArea()
 }
 
 int Pianoroll::getXFromTick( long int tick ){
-    return (int)(tick * pixelPerTick);
+    return (int)(tick * pixelPerTick) + keyWidth;
 }
 
 int Pianoroll::getYFromNoteNumber( int noteNumber ){
     return (127 - noteNumber) * trackHeight;
+}
+
+double Pianoroll::getTickFromX( int x )
+{
+    return (x - keyWidth) / pixelPerTick;
 }

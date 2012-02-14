@@ -4,6 +4,8 @@
 #include <vector>
 #include <QWidget>
 #include "PianorollItem.h"
+#include <TimesigList.h>
+#include <MeasureLineIterator.h>
 
 namespace Ui {
     class Pianoroll;
@@ -26,6 +28,12 @@ private:
      * 描画されるアイテムの一覧
      */
     std::vector<PianorollItem *> *items;
+
+    cadencii::vsq::TimesigList *timesigList;
+
+    cadencii::vsq::TimesigList defaultTimesigList;
+
+    cadencii::vsq::MeasureLineIterator *measureLineIterator;
 
     /**
      * 鍵盤の表示幅
@@ -54,7 +62,7 @@ public:
     /**
      * 描画対象のアイテムリストを設定する
      */
-    void setItems( std::vector<PianorollItem *> *aItems );
+    void setItems( std::vector<PianorollItem *> *items, cadencii::vsq::TimesigList *timesigList );
 
     /**
      * オーバーライドする。ピアノロールの描画処理が追加される
@@ -83,6 +91,11 @@ private:
     void paintKeyboard( QPainter *g, QRect, QRect visibleArea );
 
     /**
+     * 1拍ごとの線を描画する
+     */
+    void paintMeasureLines( QPainter *g, QRect visibleArea );
+
+    /**
      * tick 単位の時刻から、描画時の x 座標を取得する
      */
     inline int getXFromTick( long int tick );
@@ -91,6 +104,11 @@ private:
      * ノート番号から、描画時の y 座標を取得する
      */
     inline int getYFromNoteNumber( int noteNumber );
+
+    /**
+     * @brief x 座標から、tick 単位の時刻を取得する
+     */
+    inline double getTickFromX( int x );
 };
 
 #endif // PIANOROLL_H
