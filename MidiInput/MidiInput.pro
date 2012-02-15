@@ -57,14 +57,13 @@ win32:INCLUDEPATH += \
 RESOURCES += \
     MidiInput.qrc
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../cadencii/vsq/release/ -lvsq
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../cadencii/vsq/debug/ -lvsq
-else:symbian: LIBS += -lvsq
-else:unix: LIBS += -L$$PWD/../../cadencii/vsq/ -lvsq
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../cadencii/cadencii/vsq/build/release/release/ -lvsq
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../cadencii/cadencii/vsq/build/release/debug/ -lvsq
+else:unix:!symbian: LIBS += -L$$PWD/../../../cadencii/cadencii/vsq/build/release/ -lvsq
 
-INCLUDEPATH += $$PWD/../../cadencii/vsq
-DEPENDPATH += $$PWD/../../cadencii/vsq
+INCLUDEPATH += $$PWD/../../../cadencii/cadencii/vsq
+DEPENDPATH += $$PWD/../../../cadencii/cadencii/vsq
 
-win32:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../cadencii/vsq/release/vsq.lib
-else:win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../cadencii/vsq/debug/vsq.lib
-else:unix:!symbian: PRE_TARGETDEPS += $$PWD/../../cadencii/vsq/libvsq.a
+win32:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../cadencii/cadencii/vsq/build/release/release/vsq.lib
+else:win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../cadencii/cadencii/vsq/build/release/debug/vsq.lib
+else:unix:!symbian: PRE_TARGETDEPS += $$PWD/../../../cadencii/cadencii/vsq/build/release/libvsq.a
