@@ -21,6 +21,10 @@ public:
      */
     static const int DEFAULT_TRACK_HEIGHT = 14;
 
+    static const int NOTE_MIN = 0;
+
+    static const int NOTE_MAX = 127;
+
 private:
     Ui::Pianoroll *ui;
 
@@ -62,7 +66,7 @@ private:
     /**
      * 鍵盤の音の名前(C4など)
      */
-    QString keyNames[128];
+    QString *keyNames;
 
 public:
     explicit Pianoroll(QWidget *parent = 0);
@@ -103,7 +107,7 @@ private:
     /**
      * 鍵盤を描画する
      */
-    void paintKeyboard( QPainter *g, QRect, QRect visibleArea );
+    void paintKeyboard( QPainter *g, QRect visibleArea );
 
     /**
      * 1拍ごとの線を描画する
@@ -124,6 +128,25 @@ private:
      * @brief x 座標から、tick 単位の時刻を取得する
      */
     inline double getTickFromX( int x );
+
+    /**
+     * @brief 最小高さを取得する
+     */
+    inline int getMinimumHeight();
+
+    /**
+     * @brief ノート番号から、音名を表す番号を取得する。Cであれば0, C#であれば1など
+     * @param noteNumber ノート番号
+     * @return 音名を表す番号
+     */
+    inline int getNoteModuration( int noteNumber );
+
+    /**
+     * @brief ノート番号から、その音高が何オクターブめかを取得する。
+     * @param noteNumber ノート番号
+     * @return 何オクターブめかを表す番号
+     */
+    inline int getNoteOctave( int noteNumber );
 };
 
 #endif // PIANOROLL_H

@@ -21,55 +21,55 @@ Pianoroll::Pianoroll(QWidget *parent) :
     this->measureLineIterator = new MeasureLineIterator( &defaultTimesigList );
 
     // キーボードのキーの音名を作成
+    this->keyNames = new QString[NOTE_MAX - NOTE_MIN + 1];
     char *names[] = { "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B" };
-    for( int noteNumber = 0; noteNumber < 128; noteNumber++ ){
-        int modura = noteNumber % 12;
-        int order = (noteNumber - modura) / 12 - 2;
+    for( int noteNumber = NOTE_MIN; noteNumber <= NOTE_MAX; noteNumber++ ){
+        int modura = getNoteModuration( noteNumber );
+        int order = getNoteOctave( noteNumber );
         char *name = names[modura];
         ostringstream oss;
         oss << name << order;
-        this->keyNames[noteNumber] = QString( oss.str().c_str() );
+        this->keyNames[noteNumber - NOTE_MIN] = QString( oss.str().c_str() );
     }
 }
 
 Pianoroll::~Pianoroll()
 {
     delete ui;
+    delete [] keyNames;
+}
+
+int Pianoroll::getMinimumHeight()
+{
+    return this->trackHeight * (NOTE_MAX - NOTE_MIN + 1);
 }
 
 void Pianoroll::paintEvent( QPaintEvent * ){
-    if( this->minimumHeight() != this->trackHeight * 128 ){
-        this->setMinimumHeight( this->trackHeight * 128 );
+    int minimumHeight = this->getMinimumHeight();
+    if( this->minimumHeight() != minimumHeight ){
+        this->setMinimumHeight( minimumHeight );
     }
     QPainter p( this );
 
     QRect visibleArea = this->getVisibleArea();
 
-    QRect geometry = this->geometry();
     paintBackground( &p, visibleArea );
-
     paintMeasureLines( &p, visibleArea );
-
     paintItems( &p, visibleArea );
-
-    paintKeyboard( &p, geometry, visibleArea );
+    paintKeyboard( &p, visibleArea );
 }
 
 void Pianoroll::paintBackground( QPainter *g, QRect visibleArea ){
     // 背景
-    int width = this->width();
-    int height = this->height();
-    g->fillRect( 0, 0, width, height, QColor( 240, 240, 240 ) );
+    int height = getYFromNoteNumber( NOTE_MIN - 1 ) - visibleArea.y();
+    g->fillRect( visibleArea.x(), visibleArea.y(),
+                 visibleArea.width(), height,
+                 QColor( 240, 240, 240 ) );
 
     // 黒鍵
-    int y = 128 * trackHeight;
-    int modura = -1;
-    for( int noteNumber = 0; noteNumber < 128; noteNumber++ ){
-        y -= trackHeight;
-        modura++;
-        if( modura == 12 ){
-            modura = 0;
-        }
+    for( int noteNumber = NOTE_MIN; noteNumber <= NOTE_MAX; noteNumber++ ){
+        int y = getYFromNoteNumber( noteNumber );
+        int modura = getNoteModuration( noteNumber );
 
         if( visibleArea.y() + visibleArea.height() < y ){
             continue;
@@ -77,23 +77,19 @@ void Pianoroll::paintBackground( QPainter *g, QRect visibleArea ){
 
         // 黒鍵
         if( modura == 1 || modura == 3 || modura == 6 || modura == 8 || modura == 10 ){
-            g->fillRect( visibleArea.x() + keyWidth,
-                         y,
-                         visibleArea.width() - keyWidth,
-                         trackHeight + 1,
+            g->fillRect( visibleArea.x() + keyWidth, y,
+                         visibleArea.width() - keyWidth, trackHeight + 1,
                          QColor( 212, 212, 212 ) );
         }
 
         // 白鍵が隣り合う部分に境界線を書く
         if( modura == 11 || modura == 4 ){
             g->setPen( QColor( 210, 203, 173 ) );
-            g->drawLine( visibleArea.x() + keyWidth,
-                         y,
-                         visibleArea.x() + visibleArea.width(),
-                         y );
+            g->drawLine( visibleArea.x() + keyWidth, y,
+                         visibleArea.x() + visibleArea.width(), y );
         }
 
-        if( y < 0 ){
+        if( y < visibleArea.y() ){
             break;
         }
     }
@@ -133,29 +129,23 @@ void Pianoroll::paintItems( QPainter *g, QRect visibleArea ){
     }
 }
 
-void Pianoroll::paintKeyboard( QPainter *g, QRect geometry, QRect visibleArea ){
-    g->fillRect( visibleArea.x(),
-                 visibleArea.y(),
-                 keyWidth,
-                 visibleArea.height(),
+void Pianoroll::paintKeyboard( QPainter *g, QRect visibleArea ){
+    int height = getYFromNoteNumber( NOTE_MIN - 1 ) - visibleArea.y();
+    g->fillRect( visibleArea.x(), visibleArea.y(),
+                 keyWidth, height,
                  QColor( 240, 240, 240 ) );
-    int y = 128 * trackHeight;
-    int modura = -1;
-    int order = -2;
     QColor keyNameColor = QColor( 72, 77, 98 );
     QColor blackKeyColor = QColor( 125, 123, 124 );
-    for( int noteNumber = 0; noteNumber < 128; noteNumber++ ){
-        y -= trackHeight;
-        modura++;
-        if( modura == 12 ){
-            modura = 0;
-            order++;
-        }
+    for( int noteNumber = NOTE_MIN; noteNumber <= NOTE_MAX; noteNumber++ ){
+        int y = getYFromNoteNumber( noteNumber );
+        int modura = getNoteModuration( noteNumber );
 
         // C4 などの表示を描画
         if( modura == 0 ){
             g->setPen( keyNameColor );
-            g->drawText( visibleArea.x() + 42, y + trackHeight - 1, keyNames[noteNumber] );
+            g->drawText( visibleArea.x(), y,
+                         keyWidth - 2, trackHeight,
+                         Qt::AlignRight | Qt::AlignVCenter, keyNames[noteNumber - NOTE_MIN] );
         }
 
         // 鍵盤ごとの横線
@@ -173,7 +163,7 @@ void Pianoroll::paintKeyboard( QPainter *g, QRect geometry, QRect visibleArea ){
     g->drawLine( visibleArea.x() + keyWidth,
                  visibleArea.y(),
                  visibleArea.x() + keyWidth,
-                 visibleArea.y() + visibleArea.height() );
+                 visibleArea.y() + height );
 }
 
 void Pianoroll::setItems( std::vector<PianorollItem *> *items, TimesigList *timesigList ){
@@ -188,13 +178,13 @@ void Pianoroll::setItems( std::vector<PianorollItem *> *items, TimesigList *time
 void Pianoroll::setTrackHeight( int trackHeight )
 {
     this->trackHeight = trackHeight;
-    this->setMinimumHeight( this->trackHeight * 128 );
+    this->setMinimumHeight( this->getMinimumHeight() );
 }
 
 void Pianoroll::paintMeasureLines( QPainter *g, QRect visibleArea )
 {
     int top = visibleArea.y();
-    int bottom = top + visibleArea.height();
+    int bottom = getYFromNoteNumber( NOTE_MIN - 1 );
     int left = visibleArea.x();
     int right = left + visibleArea.width();
     tick_t tickAtScreenRight = (tick_t)getTickFromX( right );
@@ -240,10 +230,21 @@ int Pianoroll::getXFromTick( long int tick ){
 }
 
 int Pianoroll::getYFromNoteNumber( int noteNumber ){
-    return (127 - noteNumber) * trackHeight;
+    return (NOTE_MAX - noteNumber) * trackHeight;
 }
 
 double Pianoroll::getTickFromX( int x )
 {
     return (x - keyWidth) / pixelPerTick;
+}
+
+int Pianoroll::getNoteModuration( int noteNumber )
+{
+    return ((noteNumber % 12) + 12) % 12;
+}
+
+int Pianoroll::getNoteOctave( int noteNumber )
+{
+    int modura = getNoteModuration( noteNumber );
+    return (noteNumber - modura) / 12 - 2;
 }
