@@ -28,8 +28,6 @@ Dialog::Dialog( DialogListener *listener, QWidget *parent ) :
         ui->comboBox->setEnabled( true );
         ui->pushButtonStart->setEnabled( true );
     }
-
-    ui->scrollArea->widget()->setMinimumHeight( Pianoroll::DEFAULT_TRACK_HEIGHT * 128 );
 }
 
 Dialog::~Dialog()

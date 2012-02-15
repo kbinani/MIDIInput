@@ -14,7 +14,7 @@ Pianoroll::Pianoroll(QWidget *parent) :
     ui->setupUi(this);
     this->items = NULL;
     this->keyWidth = 68;
-    this->trackHeight = 14;
+    this->trackHeight = DEFAULT_TRACK_HEIGHT;
     this->pixelPerTick = 0.2;
 
     this->defaultTimesigList.push( Timesig( 4, 4, 0 ) );
@@ -38,6 +38,9 @@ Pianoroll::~Pianoroll()
 }
 
 void Pianoroll::paintEvent( QPaintEvent * ){
+    if( this->minimumHeight() != this->trackHeight * 128 ){
+        this->setMinimumHeight( this->trackHeight * 128 );
+    }
     QPainter p( this );
 
     QRect visibleArea = this->getVisibleArea();
@@ -182,6 +185,12 @@ void Pianoroll::setItems( std::vector<PianorollItem *> *items, TimesigList *time
     this->measureLineIterator = new MeasureLineIterator( this->timesigList );
 }
 
+void Pianoroll::setTrackHeight( int trackHeight )
+{
+    this->trackHeight = trackHeight;
+    this->setMinimumHeight( this->trackHeight * 128 );
+}
+
 void Pianoroll::paintMeasureLines( QPainter *g, QRect visibleArea )
 {
     int top = visibleArea.y();
@@ -214,12 +223,16 @@ void Pianoroll::paintMeasureLines( QPainter *g, QRect visibleArea )
 QRect Pianoroll::getVisibleArea()
 {
     QScrollArea *scroll = (QScrollArea *)this->parent();
-    QRect rect = scroll->childrenRect();
-    int x = -rect.x();
-    int y = -rect.y();
-    int width = scroll->width();
-    int height = scroll->height();
-    return QRect( x, y, width, height );
+    if( scroll ){
+        QRect rect = scroll->childrenRect();
+        int x = -rect.x();
+        int y = -rect.y();
+        int width = scroll->width();
+        int height = scroll->height();
+        return QRect( x, y, width, height );
+    }else{
+        return QRect( 0, 0, this->width(), this->height() );
+    }
 }
 
 int Pianoroll::getXFromTick( long int tick ){

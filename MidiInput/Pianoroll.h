@@ -29,10 +29,19 @@ private:
      */
     std::vector<PianorollItem *> *items;
 
+    /**
+     * 拍ごとの線を描画するための、拍子変更情報
+     */
     cadencii::vsq::TimesigList *timesigList;
 
+    /**
+     * @brief デフォルトの拍子変更情報
+     */
     cadencii::vsq::TimesigList defaultTimesigList;
 
+    /**
+     * @brief 拍ごとの線を描画するために、timesigList から作成した反復子
+     */
     cadencii::vsq::MeasureLineIterator *measureLineIterator;
 
     /**
@@ -68,6 +77,12 @@ public:
      * オーバーライドする。ピアノロールの描画処理が追加される
      */
     void paintEvent( QPaintEvent *e );
+
+    /**
+     * @brief ノートの描画高さを設定する
+     * @param trackHeight ノートの描画高さ
+     */
+    void setTrackHeight( int trackHeight );
 
 private:
     /**
