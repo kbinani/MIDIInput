@@ -1,4 +1,5 @@
-#include "sstream"
+#include <sstream>
+#include <math.h>
 #include "Pianoroll.h"
 #include "QScrollArea"
 #include "QPainter"
@@ -19,6 +20,7 @@ Pianoroll::Pianoroll(QWidget *parent) :
 
     this->defaultTimesigList.push( Timesig( 4, 4, 0 ) );
     this->measureLineIterator = new MeasureLineIterator( &defaultTimesigList );
+    this->setMouseTracking( true );
 
     // キーボードのキーの音名を作成
     this->keyNames = new QString[NOTE_MAX - NOTE_MIN + 1];
@@ -37,6 +39,7 @@ Pianoroll::~Pianoroll()
 {
     delete ui;
     delete [] keyNames;
+    delete measureLineIterator;
 }
 
 int Pianoroll::getMinimumHeight()
@@ -129,7 +132,18 @@ void Pianoroll::paintItems( QPainter *g, QRect visibleArea ){
     }
 }
 
+void Pianoroll::mouseMoveEvent( QMouseEvent *e )
+{
+    this->repaint();
+    QWidget::mouseMoveEvent( e );
+}
+
 void Pianoroll::paintKeyboard( QPainter *g, QRect visibleArea ){
+    // カーソル位置でのノート番号を取得する
+    QPoint cursor = QCursor::pos();
+    QPoint pianoroll = getPositionOnScreen( this );
+    int noteAtCursor = getNoteNumberFromY( cursor.y() - pianoroll.y() );
+
     int height = getYFromNoteNumber( NOTE_MIN - 1 ) - visibleArea.y();
     g->fillRect( visibleArea.x(), visibleArea.y(),
                  keyWidth, height,
@@ -141,7 +155,7 @@ void Pianoroll::paintKeyboard( QPainter *g, QRect visibleArea ){
         int modura = getNoteModuration( noteNumber );
 
         // C4 などの表示を描画
-        if( modura == 0 ){
+        if( modura == 0 || noteAtCursor == noteNumber ){
             g->setPen( keyNameColor );
             g->drawText( visibleArea.x(), y,
                          keyWidth - 2, trackHeight,
@@ -225,12 +239,17 @@ QRect Pianoroll::getVisibleArea()
     }
 }
 
-int Pianoroll::getXFromTick( long int tick ){
+int Pianoroll::getXFromTick( tick_t tick ){
     return (int)(tick * pixelPerTick) + keyWidth;
 }
 
 int Pianoroll::getYFromNoteNumber( int noteNumber ){
     return (NOTE_MAX - noteNumber) * trackHeight;
+}
+
+int Pianoroll::getNoteNumberFromY( int y )
+{
+    return NOTE_MAX - (int)::floor( (double)(y / trackHeight) );
 }
 
 double Pianoroll::getTickFromX( int x )
@@ -247,4 +266,23 @@ int Pianoroll::getNoteOctave( int noteNumber )
 {
     int modura = getNoteModuration( noteNumber );
     return (noteNumber - modura) / 12 - 2;
+}
+
+void Pianoroll::getPosition( QWidget *widget, QPoint &p )
+{
+    if( widget->parent() != 0 ){
+        QWidget *parent = (QWidget *)widget->parent();
+        QRect rect = parent->geometry();
+        p.setX( p.x() + rect.x() );
+        p.setY( p.y() + rect.y() );
+        getPosition( parent, p );
+    }
+}
+
+QPoint Pianoroll::getPositionOnScreen( QWidget *widget )
+{
+    QRect rect = widget->geometry();
+    QPoint p( rect.x(), rect.y() );
+    getPosition( widget, p );
+    return p;
 }

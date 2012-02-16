@@ -69,7 +69,15 @@ private:
     QString *keyNames;
 
 public:
-    explicit Pianoroll(QWidget *parent = 0);
+    /**
+     * @brief ウィジェットの、スクリーン上での座標を取得する
+     * @param widget ウィジェット
+     * @return スクリーン上での座標
+     */
+    static QPoint getPositionOnScreen( QWidget *widget );
+
+    explicit Pianoroll( QWidget *parent = 0 );
+
     ~Pianoroll();
 
     /**
@@ -81,6 +89,11 @@ public:
      * オーバーライドする。ピアノロールの描画処理が追加される
      */
     void paintEvent( QPaintEvent *e );
+
+    /**
+     * オーバーライドする。再描画処理が追加される
+     */
+    void mouseMoveEvent( QMouseEvent *e );
 
     /**
      * @brief ノートの描画高さを設定する
@@ -117,7 +130,12 @@ private:
     /**
      * tick 単位の時刻から、描画時の x 座標を取得する
      */
-    inline int getXFromTick( long int tick );
+    inline int getXFromTick( cadencii::vsq::tick_t tick );
+
+    /**
+     * @brief x 座標から、tick 単位の時刻を取得する
+     */
+    inline double getTickFromX( int x );
 
     /**
      * ノート番号から、描画時の y 座標を取得する
@@ -125,9 +143,11 @@ private:
     inline int getYFromNoteNumber( int noteNumber );
 
     /**
-     * @brief x 座標から、tick 単位の時刻を取得する
+     * @brief y 座標からノート番号を取得する
+     * @param y 座標
+     * @return ノート番号
      */
-    inline double getTickFromX( int x );
+    inline int getNoteNumberFromY( int y );
 
     /**
      * @brief 最小高さを取得する
@@ -147,6 +167,13 @@ private:
      * @return 何オクターブめかを表す番号
      */
     inline int getNoteOctave( int noteNumber );
+
+    /**
+     * @brief widget の親の位置を取得し、引数 p の座標値に加算する
+     * @param widget ウィジェット
+     * @param p 座標
+     */
+    static void getPosition( QWidget *widget, QPoint &p );
 };
 
 #endif // PIANOROLL_H
