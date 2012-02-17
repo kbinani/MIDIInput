@@ -51,7 +51,7 @@ void PianorollKeyboard::paintKeyboard( QPainter *g ){
     // カーソル位置でのノート番号を取得する
     QPoint cursor = QCursor::pos();
     QPoint pianoroll = PianorollContent::getPositionOnScreen( this );
-    int noteAtCursor = PianorollContent::getNoteNumberFromY( cursor.y() - pianoroll.y(), trackHeight );
+    int noteAtCursor = PianorollContent::getNoteNumberFromY( cursor.y() - pianoroll.y() - top, trackHeight );
 
     g->fillRect( 0, 0, 0, height(),
                  QColor( 240, 240, 240 ) );
