@@ -15,6 +15,7 @@ Pianoroll::Pianoroll( QWidget *parent ) :
     ui->scrollArea->setPianoroll( this );
     ui->content->setPianoroll( this );
     ui->keyboard->setPianoroll( this );
+    ui->keyboard->notifyVerticalScroll( 0 );
 }
 
 void Pianoroll::notifyVerticalScroll()
