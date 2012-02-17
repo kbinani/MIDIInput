@@ -18,7 +18,10 @@ SOURCES += \
     main.cpp \
     DialogListener.cpp \
     PianorollItem.cpp \
-    Pianoroll.cpp
+    Pianoroll.cpp \
+    PianorollContent.cpp \
+    PianorollKeyboard.cpp \
+    PianorollContentScroller.cpp
 
 HEADERS += \
     Dialog.h \
@@ -29,7 +32,10 @@ HEADERS += \
     Robot.h \
     DialogListener.h \
     PianorollItem.h \
-    Pianoroll.h
+    Pianoroll.h \
+    PianorollContent.h \
+    PianorollKeyboard.h \
+    PianorollContentScroller.h
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib

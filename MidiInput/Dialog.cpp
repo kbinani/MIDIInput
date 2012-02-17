@@ -28,7 +28,7 @@ Dialog::Dialog( DialogListener *listener, QWidget *parent ) :
         ui->comboBox->setEnabled( true );
         ui->pushButtonStart->setEnabled( true );
     }
-    ui->scrollArea->setBackgroundRole( QPalette::Dark );
+    //ui->scrollArea->setBackgroundRole( QPalette::Dark );
 }
 
 Dialog::~Dialog()
