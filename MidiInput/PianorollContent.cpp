@@ -221,25 +221,6 @@ int PianorollContent::getNoteOctave( int noteNumber )
     return (noteNumber - modura) / 12 - 2;
 }
 
-void PianorollContent::getPosition( QWidget *widget, QPoint &p )
-{
-    if( widget->parent() != 0 ){
-        QWidget *parent = (QWidget *)widget->parent();
-        QRect rect = parent->geometry();
-        p.setX( p.x() + rect.x() );
-        p.setY( p.y() + rect.y() );
-        getPosition( parent, p );
-    }
-}
-
-QPoint PianorollContent::getPositionOnScreen( QWidget *widget )
-{
-    QRect rect = widget->geometry();
-    QPoint p( rect.x(), rect.y() );
-    getPosition( widget, p );
-    return p;
-}
-
 void PianorollContent::setPianoroll( Pianoroll *pianoroll )
 {
     this->pianoroll = pianoroll;

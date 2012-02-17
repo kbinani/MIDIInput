@@ -21,8 +21,6 @@ PianorollKeyboard::PianorollKeyboard( QWidget *parent ) :
     }
 
     trackHeight = PianorollContent::DEFAULT_TRACK_HEIGHT;
-
-    paintEvent( 0 );
 }
 
 PianorollKeyboard::~PianorollKeyboard()
@@ -50,7 +48,7 @@ void PianorollKeyboard::notifyVerticalScroll( int y )
 void PianorollKeyboard::paintKeyboard( QPainter *g ){
     // カーソル位置でのノート番号を取得する
     QPoint cursor = QCursor::pos();
-    QPoint pianoroll = PianorollContent::getPositionOnScreen( this );
+    QPoint pianoroll = mapToGlobal( QPoint( 0, 0 ) );
     int noteAtCursor = PianorollContent::getNoteNumberFromY( cursor.y() - pianoroll.y() - top, trackHeight );
 
     g->fillRect( 0, 0, width(), height(),

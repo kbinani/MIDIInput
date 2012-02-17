@@ -57,13 +57,6 @@ private:
 
 public:
     /**
-     * @brief ウィジェットの、スクリーン上での座標を取得する
-     * @param widget ウィジェット
-     * @return スクリーン上での座標
-     */
-    static QPoint getPositionOnScreen( QWidget *widget );
-
-    /**
      * @brief ノート番号から、音名を表す番号を取得する。Cであれば0, C#であれば1など
      * @param noteNumber ノート番号
      * @return 音名を表す番号
@@ -159,13 +152,6 @@ private:
     inline int getMinimumHeight();
 
     QRect getPaintArea();
-
-    /**
-     * @brief widget の親の位置を取得し、引数 p の座標値に加算する
-     * @param widget ウィジェット
-     * @param p 座標
-     */
-    static void getPosition( QWidget *widget, QPoint &p );
 };
 
 #endif
