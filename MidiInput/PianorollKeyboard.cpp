@@ -53,7 +53,7 @@ void PianorollKeyboard::paintKeyboard( QPainter *g ){
     QPoint pianoroll = PianorollContent::getPositionOnScreen( this );
     int noteAtCursor = PianorollContent::getNoteNumberFromY( cursor.y() - pianoroll.y() - top, trackHeight );
 
-    g->fillRect( 0, 0, 0, height(),
+    g->fillRect( 0, 0, width(), height(),
                  QColor( 240, 240, 240 ) );
     QColor keyNameColor = QColor( 72, 77, 98 );
     QColor blackKeyColor = QColor( 125, 123, 124 );
