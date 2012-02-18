@@ -201,7 +201,7 @@ QRect PianorollContent::getPaintArea()
 }
 
 int PianorollContent::getXFromTick( tick_t tick ){
-    return (int)(tick * pixelPerTick) - 1;
+    return (int)(tick * pixelPerTick) + 5;
 }
 
 int PianorollContent::getYFromNoteNumber( int noteNumber, int trackHeight ){
@@ -215,7 +215,7 @@ int PianorollContent::getNoteNumberFromY( int y, int trackHeight )
 
 double PianorollContent::getTickFromX( int x )
 {
-    return x / pixelPerTick;
+    return (x - 5) / pixelPerTick;
 }
 
 int PianorollContent::getNoteModuration( int noteNumber )
