@@ -42,6 +42,7 @@ Dialog::Dialog( QWidget *parent ) :
     ui->pianoroll->setSongPosition( 0 );
     mutex = new QMutex();
     ui->pianoroll->setMutex( mutex );
+    ui->pianoroll->setAutoScroll( true );
 
     connect( this, SIGNAL(doRepaint()), SLOT(onRepaintRequired()) );
 }

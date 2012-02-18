@@ -247,7 +247,10 @@ void PianorollContent::setPianoroll( Pianoroll *pianoroll )
 
 void PianorollContent::setSongPosition( tick_t songPosition )
 {
-    this->songPosition = songPosition;
+    int x = getXFromTick( songPosition );
+    if( 0 <= x && x < width() ){
+        this->songPosition = songPosition;
+    }
 }
 
 tick_t PianorollContent::getSongPosition()

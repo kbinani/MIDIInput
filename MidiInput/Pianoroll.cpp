@@ -1,7 +1,8 @@
-#include "Pianoroll.h"
-#include "ui_Pianoroll.h"
 #include <sstream>
 #include <QScrollBar>
+#include "Pianoroll.h"
+#include "PianorollContent.h"
+#include "ui_Pianoroll.h"
 
 using namespace std;
 using namespace cadencii::vsq;
@@ -16,6 +17,7 @@ Pianoroll::Pianoroll( QWidget *parent ) :
     ui->content->setPianoroll( this );
     ui->keyboard->setPianoroll( this );
     ui->keyboard->notifyVerticalScroll( 0 );
+    autoScroll = true;
 }
 
 void Pianoroll::notifyVerticalScroll()
@@ -32,7 +34,35 @@ void Pianoroll::setTrackHeight( int trackHeight )
 
 void Pianoroll::setSongPosition( tick_t songPosition )
 {
+    tick_t lastSongPosition = ui->content->getSongPosition();
     ui->content->setSongPosition( songPosition );
+    if( autoScroll ){
+        int x = ui->content->getXFromTick( songPosition );
+        QRect visibleArea = ui->content->getVisibleArea();
+        QScrollBar *scrollBar = ui->scrollArea->horizontalScrollBar();
+        int dx = 0;
+        if( lastSongPosition < songPosition ){
+            // 右へ移動した場合
+            if( visibleArea.right() < x ){
+                dx = ui->scrollArea->width() - (x - visibleArea.right());
+            }
+        }else{
+            // 左へ移動した場合
+            if( x < visibleArea.left() ){
+                dx = -ui->scrollArea->width() + (visibleArea.left() - x);
+            }
+        }
+        if( dx ){
+            int value = scrollBar->value() + dx;
+            if( value < scrollBar->minimum() ){
+                scrollBar->setValue( scrollBar->minimum() );
+            }else if( scrollBar->maximum() < value ){
+                scrollBar->setValue( scrollBar->maximum() );
+            }else{
+                scrollBar->setValue( scrollBar->value() + dx );
+            }
+        }
+    }
 }
 
 tick_t Pianoroll::getSongPosition()
@@ -60,4 +90,9 @@ void Pianoroll::repaint()
 void Pianoroll::setMutex( QMutex *mutex )
 {
     ui->content->setMutex( mutex );
+}
+
+void Pianoroll::setAutoScroll( bool autoScroll )
+{
+    this->autoScroll = autoScroll;
 }

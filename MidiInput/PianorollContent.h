@@ -154,6 +154,13 @@ public:
      */
     void setMutex( QMutex *mutex );
 
+    /**
+     * @brief tick 単位の時刻から、描画時の x 座標を取得する
+     * @param tick 時刻
+     * @return x 座標
+     */
+    int getXFromTick( cadencii::vsq::tick_t tick );
+
 private:
     /**
      * ピアノロールのバックグラウンドを描画する
@@ -174,11 +181,6 @@ private:
      * @brief ソングポジションを描画する
      */
     void paintSongPosition( QPainter *g, QRect visibleArea );
-
-    /**
-     * tick 単位の時刻から、描画時の x 座標を取得する
-     */
-    inline int getXFromTick( cadencii::vsq::tick_t tick );
 
     /**
      * @brief x 座標から、tick 単位の時刻を取得する
