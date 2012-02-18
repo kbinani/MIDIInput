@@ -1,6 +1,7 @@
 #include <QPainter>
 #include <sstream>
 #include "Pianoroll.h"
+#include "PianorollContent.h"
 #include "PianorollKeyboard.h"
 
 using namespace std;

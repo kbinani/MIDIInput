@@ -7,6 +7,8 @@ class Pianoroll;
 
 class PianorollKeyboard : public QWidget
 {
+    friend class Pianoroll;
+
     Q_OBJECT
 
 private:
@@ -40,8 +42,6 @@ public:
      */
     void setPianoroll( Pianoroll *pianoroll );
 
-    void notifyVerticalScroll( int y );
-
     void setTrackHeight( int trackHeight );
 
 private:
@@ -49,6 +49,11 @@ private:
      * @brief 鍵盤を描画する
      */
     void paintKeyboard( QPainter *g );
+
+    /**
+     * @brief スクロール領域が縦方向にスクロールしたことを Pianoroll -> PianorollKeyboard に通知する
+     */
+    void notifyVerticalScroll( int y );
 };
 
 #endif

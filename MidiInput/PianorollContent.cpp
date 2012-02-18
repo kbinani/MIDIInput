@@ -1,14 +1,10 @@
 #include <sstream>
 #include <math.h>
-#include "Pianoroll.h"
-#include "QScrollArea"
-#include "QPainter"
-#include <sstream>
-#include <math.h>
-#include "Pianoroll.h"
-#include "QScrollArea"
-#include "QPainter"
+#include <QScrollArea>
+#include <QPainter>
 #include <Timesig.h>
+#include "Pianoroll.h"
+#include "PianorollContent.h"
 
 using namespace std;
 using namespace VSQ_NS;

@@ -3,10 +3,11 @@
 
 #include <vector>
 #include <QScrollArea>
+#include <QMutex>
 #include <MeasureLineIterator.h>
 #include <TimesigList.h>
 #include "PianorollItem.h"
-#include "PianorollContent.h"
+#include "PianorollContentScroller.h"
 #include "PianorollKeyboard.h"
 
 namespace Ui{
@@ -15,17 +16,14 @@ namespace Ui{
 
 class Pianoroll : public QWidget
 {
+    friend class PianorollContentScroller;
+
     Q_OBJECT
 
 public:
     Ui::Pianoroll *ui;
 
     explicit Pianoroll( QWidget *parent = 0 );
-
-    /**
-     * スクロール領域が縦方向にスクロールしたことを子→親に通知する
-     */
-    void notifyVerticalScroll();
 
     void setTrackHeight( int trackHeight );
 
@@ -63,6 +61,12 @@ public:
      * @param mutex ミューテックス
      */
     void setMutex( QMutex *mutex );
+
+private:
+    /**
+     * @brief スクロール領域が縦方向にスクロールしたことを PianorollContentScroller -> Pianoroll に通知する
+     */
+    void notifyVerticalScroll();
 };
 
 
