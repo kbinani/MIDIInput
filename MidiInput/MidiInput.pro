@@ -60,16 +60,25 @@ unix:LIBS += -llua
 win32:INCLUDEPATH += \
     "C:\lua5_1_4_Sources\lua5.1\include"
 
+unix:INCLUDEPATH += \
+    /usr/include/lua5.1
+
 RESOURCES += \
     MidiInput.qrc
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../cadencii/cadencii/vsq/build/debug/ -lvsq
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../cadencii/cadencii/vsq/build/release/ -lvsq
-else:unix:!symbian: LIBS += -L$$PWD/../../../cadencii/cadencii/vsq/build/release/ -lvsq
+win32:CONFIG(release, debug|release):          LIBS += -L$$PWD/../../../cadencii/cadencii/vsq/build/win32/release/ -lvsq
+else:win32:CONFIG(debug, debug|release):       LIBS += -L$$PWD/../../../cadencii/cadencii/vsq/build/win32/debug/ -lvsq
+else:unix:!mac:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../cadencii/cadencii/vsq/build/linux/release/ -lvsq
+else:unix:!mac:CONFIG(debug, debug|release):   LIBS += -L$$PWD/../../../cadencii/cadencii/vsq/build/linux/debug/ -lvsq
+else:unix:CONFIG(release, debug|release):      LIBS += -L$$PWD/../../../cadencii/cadencii/vsq/build/macosx/release/ -lvsq
+else:unix:CONFIG(debug, debug|release):        LIBS += -L$$PWD/../../../cadencii/cadencii/vsq/build/macosx/debug/ -lvsq
 
 INCLUDEPATH += $$PWD/../../../cadencii/cadencii/vsq
 DEPENDPATH += $$PWD/../../../cadencii/cadencii/vsq
 
-win32:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../cadencii/cadencii/vsq/build/debug/vsq.lib
-else:win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../../../cadencii/cadencii/vsq/build/release/vsq.lib
-else:unix:!symbian: PRE_TARGETDEPS += $$PWD/../../../cadencii/cadencii/vsq/build/release/libvsq.a
+win32:CONFIG(release, debug|release):          PRE_TARGETDEPS += $$PWD/../../../cadencii/cadencii/vsq/build/win32/release/vsq.lib
+else:win32:CONFIG(debug, debug|release):       PRE_TARGETDEPS += $$PWD/../../../cadencii/cadencii/vsq/build/win32/debug/vsq.lib
+else:unix:!mac:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../../cadencii/cadencii/vsq/build/linux/release/libvsq.a
+else:unix:!mac:CONFIG(debug, debug|release):   PRE_TARGETDEPS += $$PWD/../../../cadencii/cadencii/vsq/build/linux/debug/libvsq.a
+else:unix:CONFIG(release, debug|release):      PRE_TARGETDEPS += $$PWD/../../../cadencii/cadencii/vsq/build/macosx/release/libvsq.a
+else:unix:CONFIG(debug, debug|release):        PRE_TARGETDEPS += $$PWD/../../../cadencii/cadencii/vsq/build/macosx/debug/libvsq.a
