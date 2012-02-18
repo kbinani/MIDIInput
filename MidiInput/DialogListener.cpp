@@ -8,17 +8,7 @@ using namespace std;
 DialogListener::DialogListener(){
 }
 
-void DialogListener::inputStartRequired( int channel ){
-    this->clearQueue();
-    this->channel = channel;
-    MidiInput::setReceiver( this );
-    MidiInput::start( this->channel );
-}
 
-void DialogListener::inputStopRequired(){
-    MidiInput::stop( this->channel );
-    MidiInput::setReceiver( NULL );
-}
 
 void DialogListener::send( unsigned char b1, unsigned char b2, unsigned char b3 ){
     int command = (b1 & 0xF0);

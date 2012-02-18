@@ -1,3 +1,4 @@
+#include <sstream>
 #include <QKeyEvent>
 #include "MidiInput.h"
 #include "Dialog.h"
@@ -7,17 +8,17 @@
 using namespace std;
 using namespace VSQ_NS;
 
-Dialog::Dialog( DialogListener *listener, QWidget *parent ) :
+Dialog::Dialog( QWidget *parent ) :
     QDialog( parent ),
     ui( new Ui::Dialog )
 {
     ui->setupUi( this );
 
-    this->listener = listener;
     stepUnit = 480;
     ui->toolButtonNote004->toggle();
+    inputStarted = false;
 
-    ui->pushButtonStart->setEnabled( false );
+    ui->pushButtonInputToggle->setEnabled( false );
     ui->comboBox->clear();
     ui->comboBox->setEnabled( false );
 
@@ -30,7 +31,7 @@ Dialog::Dialog( DialogListener *listener, QWidget *parent ) :
     }
     if( ui->comboBox->count() > 0 ){
         ui->comboBox->setEnabled( true );
-        ui->pushButtonStart->setEnabled( true );
+        ui->pushButtonInputToggle->setEnabled( true );
     }
 
     timesigList = new TimesigList();
@@ -45,21 +46,20 @@ Dialog::~Dialog()
     delete timesigList;
 }
 
-void Dialog::on_pushButtonStart_clicked()
+void Dialog::on_pushButtonInputToggle_clicked()
 {
-    if( this->listener ){
+    if( inputStarted ){
+        ui->pushButtonInputToggle->setText( tr( "Start" ) );
+        inputStopRequired();
+    }else{
+        ui->pushButtonInputToggle->setText( tr( "Stop" ) );
         int channel = ui->comboBox->currentIndex();
         if( 0 <= channel && channel < MidiInput::getDeviceCount() ){
-            this->listener->inputStartRequired( channel );
+            inputStartRequired( channel );
         }
     }
-}
-
-void Dialog::on_pushButtonStop_clicked()
-{
-    if( this->listener ){
-        this->listener->inputStopRequired();
-    }
+    inputStarted = !inputStarted;
+    ui->comboBox->setEnabled( !inputStarted );
 }
 
 void Dialog::keyPressEvent( QKeyEvent *e )
@@ -146,5 +146,38 @@ void Dialog::on_toolButtonRest016_toggled(bool checked)
 {
     if( checked ){
         stepUnit = 120;
+    }
+}
+
+void Dialog::inputStartRequired( int channel )
+{
+    this->channel = channel;
+    MidiInput::setReceiver( this );
+    MidiInput::start( this->channel );
+}
+
+void Dialog::inputStopRequired()
+{
+    MidiInput::stop( this->channel );
+    MidiInput::setReceiver( NULL );
+}
+
+void Dialog::send( unsigned char b1, unsigned char b2, unsigned char b3 )
+{
+    int command = (b1 & 0xF0);
+    if( command == 0x90 && b3 != 0 ){
+        int length = 480;
+        int position = 1920;
+        bool isRest = false;
+
+        ostringstream oss;
+        oss << "PUT " << (isRest ? "REST" : "NOTE") << " LENGTH " << length;
+        if( !isRest ){
+            oss << " PITCH " << (int)b2;
+        }
+        oss << " AT " << position;
+        {//TODO:
+            qDebug( oss.str().c_str() );
+        }
     }
 }

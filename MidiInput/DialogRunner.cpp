@@ -5,13 +5,9 @@
 #include "DialogListener.h"
 #include "Pianoroll.h"
 
-DialogRunner::DialogRunner( DialogListener *listener ){
-    this->listener = listener;
-}
-
 void DialogRunner::run(){
     int argc;
     QApplication application( argc, NULL );
-    Dialog dialog( this->listener );
+    Dialog dialog;
     dialog.exec();
 }

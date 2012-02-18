@@ -28,8 +28,7 @@ extern "C"{
             if( dialogListener ){
                 delete dialogListener;
             }
-            dialogListener = new DialogListener();
-            dialogRunner = new DialogRunner( dialogListener );
+            dialogRunner = new DialogRunner();
             dialogRunner->start();
         }
         bool isFinished = dialogRunner->isFinished();

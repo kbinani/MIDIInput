@@ -3,20 +3,19 @@
 
 #include <QDialog>
 #include <TimesigList.h>
-#include "DialogListener.h"
+#include "MidiInputReceiver.h"
 
 namespace Ui {
     class Dialog;
 }
 
-class Dialog : public QDialog
+class Dialog : public QDialog, public MidiInputReceiver
 {
     Q_OBJECT
 
-public:
-    DialogListener *listener;
-
 private:
+    Ui::Dialog *ui;
+
     /**
      * @brief テンポ変更
      */
@@ -27,15 +26,27 @@ private:
      */
     VSQ_NS::tick_t stepUnit;
 
+    /**
+     * @brief MIDI 入力が開始されたかどうか
+     */
+    bool inputStarted;
+
+    /**
+     * @brief MIDI 入力しているチャンネル番号
+     */
+    int channel;
+
 public:
-    explicit Dialog( DialogListener *listener, QWidget *parent = 0 );
+    explicit Dialog( QWidget *parent = 0 );
+
     ~Dialog();
+
     void keyPressEvent( QKeyEvent *e );
     
-private slots:
-    void on_pushButtonStart_clicked();
+    void send( unsigned char b1, unsigned char b2, unsigned char b3 );
 
-    void on_pushButtonStop_clicked();
+private slots:
+    void on_pushButtonInputToggle_clicked();
 
     void on_toolButtonNote001_toggled(bool checked);
 
@@ -58,7 +69,16 @@ private slots:
     void on_toolButtonRest016_toggled(bool checked);
 
 private:
-    Ui::Dialog *ui;
+    /**
+     * MIDI 入力開始が要求されたとき呼ばれる
+     * @param channel MIDI 入力ポート番号
+     */
+    void inputStartRequired( int channel );
+
+    /**
+     * MIDI 入力終了が要求されたとき呼ばれる
+     */
+    void inputStopRequired();
 };
 
 #endif // DIALOG_H
