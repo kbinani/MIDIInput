@@ -38,13 +38,26 @@ Dialog::Dialog( QWidget *parent ) :
     timesigList = new TimesigList();
     timesigList->push( Timesig( 4, 4, 0 ) );
     ui->pianoroll->setTimesigList( timesigList );
+    ui->pianoroll->setItems( &items );
     ui->pianoroll->setSongPosition( 0 );
+    mutex = new QMutex();
+    ui->pianoroll->setMutex( mutex );
+
+    connect( this, SIGNAL(doRepaint()), SLOT(onRepaintRequired()) );
 }
 
 Dialog::~Dialog()
 {
     delete ui;
     delete timesigList;
+    for( int i = 0; i < items.size(); i++ ){
+        PianorollItem *item = items[i];
+        if( item ){
+            delete item;
+        }
+    }
+    items.clear();
+    delete mutex;
 }
 
 void Dialog::on_pushButtonInputToggle_clicked()
@@ -177,15 +190,27 @@ void Dialog::send( unsigned char b1, unsigned char b2, unsigned char b3 )
 {
     int command = (b1 & 0xF0);
     if( command == 0x90 && b3 != 0 ){
-        int length = 480;
-        int position = 1920;
-        bool isRest = false;
+        tick_t length = stepUnit;
+        tick_t position = ui->pianoroll->getSongPosition();
 
-        ostringstream oss;
-        oss << "PUT " << (isRest ? "REST" : "NOTE") << " LENGTH " << length;
         if( !isRest ){
-            oss << " PITCH " << (int)b2;
+            PianorollItem *add = new PianorollItem();
+            add->length = length;
+            add->noteNumber = b2;
+            add->phrase = "\xE3\x81\x82";
+            add->symbols = "a";
+            add->tick = position;
+            mutex->lock();
+            items.push_back( add );
+            mutex->unlock();
         }
-        oss << " AT " << position;
+
+        ui->pianoroll->setSongPosition( position + length );
+        emit doRepaint();
     }
+}
+
+void Dialog::onRepaintRequired()
+{
+    ui->pianoroll->repaint();
 }

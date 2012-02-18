@@ -2,8 +2,10 @@
 #define DIALOG_H
 
 #include <QDialog>
+#include <QMutex>
 #include <TimesigList.h>
 #include "MidiInputReceiver.h"
+#include "PianorollItem.h"
 
 namespace Ui {
     class Dialog;
@@ -20,6 +22,11 @@ private:
      * @brief テンポ変更
      */
     VSQ_NS::TimesigList *timesigList;
+
+    /**
+     * @brief 描画対象のリスト
+     */
+    std::vector<PianorollItem *> items;
 
     /**
      * 左右キーを押した際に、ソングポジションが移動する量
@@ -41,6 +48,11 @@ private:
      */
     bool isRest;
 
+    /**
+     * @brief items フィールドに更新をかけるときに使用するミューテックス
+     */
+    QMutex *mutex;
+
 public:
     explicit Dialog( QWidget *parent = 0 );
 
@@ -49,6 +61,12 @@ public:
     void keyPressEvent( QKeyEvent *e );
     
     void send( unsigned char b1, unsigned char b2, unsigned char b3 );
+
+signals:
+    /**
+     * @brief スレッドセーフに画面の再描画を行うためのシグナル
+     */
+    void doRepaint();
 
 private slots:
     void on_pushButtonInputToggle_clicked();
@@ -72,6 +90,11 @@ private slots:
     void on_toolButtonRest008_toggled(bool checked);
 
     void on_toolButtonRest016_toggled(bool checked);
+
+    /**
+     * @brief 画面の再描画を行う
+     */
+    void onRepaintRequired();
 
 private:
     /**

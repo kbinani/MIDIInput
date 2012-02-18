@@ -19,6 +19,7 @@ PianorollContent::PianorollContent(QWidget *parent) :
     this->items = NULL;
     this->trackHeight = DEFAULT_TRACK_HEIGHT;
     this->pixelPerTick = 0.2;
+    mutex = NULL;
 
     this->defaultTimesigList.push( Timesig( 4, 4, 0 ) );
     this->measureLineIterator = new MeasureLineIterator( &defaultTimesigList );
@@ -48,7 +49,13 @@ void PianorollContent::paintEvent( QPaintEvent * ){
 
     paintBackground( &p, visibleArea );
     paintMeasureLines( &p, visibleArea );
-    paintItems( &p, visibleArea );
+    if( mutex ){
+        mutex->lock();
+        paintItems( &p, visibleArea );
+        mutex->unlock();
+    }else{
+        paintItems( &p, visibleArea );
+    }
     paintSongPosition( &p, visibleArea );
 }
 
@@ -250,4 +257,9 @@ void PianorollContent::setSongPosition( tick_t songPosition )
 tick_t PianorollContent::getSongPosition()
 {
     return songPosition;
+}
+
+void PianorollContent::setMutex( QMutex *mutex )
+{
+    this->mutex = mutex;
 }

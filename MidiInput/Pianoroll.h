@@ -48,9 +48,21 @@ public:
     void setTimesigList( VSQ_NS::TimesigList *timesigList );
 
     /**
+     * @brief 描画対象のアイテムリストを設定する
+     * @param items 描画対象のアイテム
+     */
+    void setItems( std::vector<PianorollItem *> *items );
+
+    /**
      * @brief オーバーライドする。ピアノロール本体と、鍵盤部分を repaint する処理を追加している。
      */
     void repaint();
+
+    /**
+     * @brief ミューテックスを設定する
+     * @param mutex ミューテックス
+     */
+    void setMutex( QMutex *mutex );
 };
 
 

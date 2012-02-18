@@ -2,6 +2,7 @@
 #define __PianorollContent_h__
 
 #include <QWidget>
+#include <QMutex>
 #include <TimesigList.h>
 #include <MeasureLineIterator.h>
 #include "PianorollItem.h"
@@ -59,6 +60,11 @@ private:
      * @brief ソングポジション
      */
     cadencii::vsq::tick_t songPosition;
+
+    /**
+     * @brief 描画アイテムのリストをロックするための Mutex
+     */
+    QMutex *mutex;
 
 public:
     /**
@@ -141,6 +147,12 @@ public:
      * @brief ソングポジションを取得する
      */
     cadencii::vsq::tick_t getSongPosition();
+
+    /**
+     * @brief ミューテックスを設定する
+     * @param mutex ミューテックス
+     */
+    void setMutex( QMutex *mutex );
 
 private:
     /**
