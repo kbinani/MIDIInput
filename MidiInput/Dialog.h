@@ -36,6 +36,11 @@ private:
      */
     int channel;
 
+    /**
+     * @brief 休符を入力している状態であれば true
+     */
+    bool isRest;
+
 public:
     explicit Dialog( QWidget *parent = 0 );
 

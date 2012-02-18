@@ -15,6 +15,7 @@ Dialog::Dialog( QWidget *parent ) :
     ui->setupUi( this );
 
     stepUnit = 480;
+    isRest = false;
     ui->toolButtonNote004->toggle();
     inputStarted = false;
 
@@ -83,6 +84,7 @@ void Dialog::on_toolButtonNote001_toggled( bool checked )
 {
     if( checked ){
         stepUnit = 1920;
+        isRest = false;
     }
 }
 
@@ -90,6 +92,7 @@ void Dialog::on_toolButtonNote002_toggled(bool checked)
 {
     if( checked ){
         stepUnit = 960;
+        isRest = false;
     }
 }
 
@@ -97,6 +100,7 @@ void Dialog::on_toolButtonNote004_toggled(bool checked)
 {
     if( checked ){
         stepUnit = 480;
+        isRest = false;
     }
 }
 
@@ -104,6 +108,7 @@ void Dialog::on_toolButtonNote008_toggled(bool checked)
 {
     if( checked ){
         stepUnit = 240;
+        isRest = false;
     }
 }
 
@@ -111,6 +116,7 @@ void Dialog::on_toolButtonNote016_toggled(bool checked)
 {
     if( checked ){
         stepUnit = 120;
+        isRest = false;
     }
 }
 
@@ -118,6 +124,7 @@ void Dialog::on_toolButtonRest001_toggled(bool checked)
 {
     if( checked ){
         stepUnit = 1920;
+        isRest = true;
     }
 }
 
@@ -125,6 +132,7 @@ void Dialog::on_toolButtonRest002_toggled(bool checked)
 {
     if( checked ){
         stepUnit = 960;
+        isRest = true;
     }
 }
 
@@ -132,6 +140,7 @@ void Dialog::on_toolButtonRest004_toggled(bool checked)
 {
     if( checked ){
         stepUnit = 480;
+        isRest = true;
     }
 }
 
@@ -139,6 +148,7 @@ void Dialog::on_toolButtonRest008_toggled(bool checked)
 {
     if( checked ){
         stepUnit = 240;
+        isRest = true;
     }
 }
 
@@ -146,6 +156,7 @@ void Dialog::on_toolButtonRest016_toggled(bool checked)
 {
     if( checked ){
         stepUnit = 120;
+        isRest = true;
     }
 }
 
@@ -176,8 +187,5 @@ void Dialog::send( unsigned char b1, unsigned char b2, unsigned char b3 )
             oss << " PITCH " << (int)b2;
         }
         oss << " AT " << position;
-        {//TODO:
-            qDebug( oss.str().c_str() );
-        }
     }
 }
