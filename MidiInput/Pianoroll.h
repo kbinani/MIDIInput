@@ -33,6 +33,12 @@ public:
      * @brief ソングポジションを設定する
      */
     void setSongPosition( cadencii::vsq::tick_t songPosition );
+
+    /**
+     * @brief テンポ変更リストを設定する
+     * @param timesigList テンポ変更リスト
+     */
+    void setTimesigList( VSQ_NS::TimesigList *timesigList );
 };
 
 
