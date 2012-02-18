@@ -14,6 +14,8 @@ Dialog::Dialog( DialogListener *listener, QWidget *parent ) :
     ui->setupUi( this );
 
     this->listener = listener;
+    stepUnit = 480;
+    ui->toolButtonNote004->toggle();
 
     ui->pushButtonStart->setEnabled( false );
     ui->comboBox->clear();
@@ -66,8 +68,7 @@ void Dialog::keyPressEvent( QKeyEvent *e )
     int delta = (key == Qt::Key_Left ? -1 : (key == Qt::Key_Right ? 1 : 0));
     if( delta ){
         tick_t songPosition = ui->pianoroll->getSongPosition();
-        Timesig timesig = timesigList->getTimesigAt( songPosition );
-        tick_t newSongPosition = songPosition + (delta * 480 * 4 / timesig.denominator);
+        tick_t newSongPosition = songPosition + delta * stepUnit;
         if( newSongPosition < 0 ){
             newSongPosition = 0;
         }
@@ -75,5 +76,75 @@ void Dialog::keyPressEvent( QKeyEvent *e )
             ui->pianoroll->setSongPosition( newSongPosition );
             ui->pianoroll->repaint();
         }
+    }
+}
+
+void Dialog::on_toolButtonNote001_toggled( bool checked )
+{
+    if( checked ){
+        stepUnit = 1920;
+    }
+}
+
+void Dialog::on_toolButtonNote002_toggled(bool checked)
+{
+    if( checked ){
+        stepUnit = 960;
+    }
+}
+
+void Dialog::on_toolButtonNote004_toggled(bool checked)
+{
+    if( checked ){
+        stepUnit = 480;
+    }
+}
+
+void Dialog::on_toolButtonNote008_toggled(bool checked)
+{
+    if( checked ){
+        stepUnit = 240;
+    }
+}
+
+void Dialog::on_toolButtonNote016_toggled(bool checked)
+{
+    if( checked ){
+        stepUnit = 120;
+    }
+}
+
+void Dialog::on_toolButtonRest001_toggled(bool checked)
+{
+    if( checked ){
+        stepUnit = 1920;
+    }
+}
+
+void Dialog::on_toolButtonRest002_toggled(bool checked)
+{
+    if( checked ){
+        stepUnit = 960;
+    }
+}
+
+void Dialog::on_toolButtonRest004_toggled(bool checked)
+{
+    if( checked ){
+        stepUnit = 480;
+    }
+}
+
+void Dialog::on_toolButtonRest008_toggled(bool checked)
+{
+    if( checked ){
+        stepUnit = 240;
+    }
+}
+
+void Dialog::on_toolButtonRest016_toggled(bool checked)
+{
+    if( checked ){
+        stepUnit = 120;
     }
 }
