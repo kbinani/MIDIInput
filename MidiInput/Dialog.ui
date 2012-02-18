@@ -47,6 +47,9 @@
         <height>25</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="text">
        <string>Start</string>
       </property>
@@ -60,6 +63,9 @@
         <height>25</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
      </widget>
      <widget class="QToolButton" name="toolButtonNote001">
       <property name="geometry">
@@ -69,6 +75,9 @@
         <width>30</width>
         <height>30</height>
        </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
       </property>
       <property name="text">
        <string/>
@@ -93,6 +102,9 @@
         <height>30</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -116,6 +128,9 @@
         <height>30</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -131,6 +146,9 @@
         <width>30</width>
         <height>30</height>
        </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
       </property>
       <property name="text">
        <string/>
@@ -155,6 +173,9 @@
         <height>25</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="text">
        <string>Stop</string>
       </property>
@@ -167,6 +188,9 @@
         <width>30</width>
         <height>30</height>
        </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
       </property>
       <property name="text">
        <string/>
@@ -190,6 +214,9 @@
         <width>30</width>
         <height>30</height>
        </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
       </property>
       <property name="text">
        <string/>
@@ -227,6 +254,9 @@
         <height>30</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -249,6 +279,9 @@
         <width>30</width>
         <height>30</height>
        </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
       </property>
       <property name="text">
        <string/>
@@ -273,6 +306,9 @@
         <height>30</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -296,6 +332,9 @@
         <height>30</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -311,6 +350,9 @@
         <width>30</width>
         <height>30</height>
        </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
       </property>
       <property name="text">
        <string/>
@@ -338,6 +380,9 @@
         <height>30</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -355,8 +400,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Pianoroll" name="pianoroll">
-    </widget>
+    <widget class="Pianoroll" name="pianoroll" native="true"/>
    </item>
   </layout>
  </widget>
