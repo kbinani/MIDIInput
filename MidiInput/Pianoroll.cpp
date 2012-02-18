@@ -35,6 +35,11 @@ void Pianoroll::setSongPosition( tick_t songPosition )
     ui->content->setSongPosition( songPosition );
 }
 
+tick_t Pianoroll::getSongPosition()
+{
+    return ui->content->getSongPosition();
+}
+
 void Pianoroll::setTimesigList( TimesigList *timesigList )
 {
     ui->content->setTimesigList( timesigList );

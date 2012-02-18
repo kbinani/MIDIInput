@@ -2,6 +2,7 @@
 #define DIALOG_H
 
 #include <QDialog>
+#include <TimesigList.h>
 #include "DialogListener.h"
 
 namespace Ui {
@@ -15,9 +16,16 @@ class Dialog : public QDialog
 public:
     DialogListener *listener;
 
+private:
+    /**
+     * @brief テンポ変更
+     */
+    VSQ_NS::TimesigList *timesigList;
+
 public:
     explicit Dialog( DialogListener *listener, QWidget *parent = 0 );
     ~Dialog();
+    void keyPressEvent( QKeyEvent *e );
     
 private slots:
     void on_pushButtonStart_clicked();

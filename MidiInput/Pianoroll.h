@@ -31,8 +31,15 @@ public:
 
     /**
      * @brief ソングポジションを設定する
+     * @param ソングポジション
      */
-    void setSongPosition( cadencii::vsq::tick_t songPosition );
+    void setSongPosition( VSQ_NS::tick_t songPosition );
+
+    /**
+     * @brief ソングポジションを取得する
+     * @return ソングポジション
+     */
+    VSQ_NS::tick_t getSongPosition();
 
     /**
      * @brief テンポ変更リストを設定する

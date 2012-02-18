@@ -1,9 +1,11 @@
+#include <QKeyEvent>
 #include "MidiInput.h"
 #include "Dialog.h"
 #include "Pianoroll.h"
 #include "ui_Dialog.h"
 
 using namespace std;
+using namespace VSQ_NS;
 
 Dialog::Dialog( DialogListener *listener, QWidget *parent ) :
     QDialog( parent ),
@@ -29,12 +31,16 @@ Dialog::Dialog( DialogListener *listener, QWidget *parent ) :
         ui->pushButtonStart->setEnabled( true );
     }
 
+    timesigList = new TimesigList();
+    timesigList->push( Timesig( 4, 4, 0 ) );
+    ui->pianoroll->setTimesigList( timesigList );
     ui->pianoroll->setSongPosition( 0 );
 }
 
 Dialog::~Dialog()
 {
     delete ui;
+    delete timesigList;
 }
 
 void Dialog::on_pushButtonStart_clicked()
@@ -51,5 +57,23 @@ void Dialog::on_pushButtonStop_clicked()
 {
     if( this->listener ){
         this->listener->inputStopRequired();
+    }
+}
+
+void Dialog::keyPressEvent( QKeyEvent *e )
+{
+    int key = e->key();
+    int delta = (key == Qt::Key_Left ? -1 : (key == Qt::Key_Right ? 1 : 0));
+    if( delta ){
+        tick_t songPosition = ui->pianoroll->getSongPosition();
+        Timesig timesig = timesigList->getTimesigAt( songPosition );
+        tick_t newSongPosition = songPosition + (delta * 480 * 4 / timesig.denominator);
+        if( newSongPosition < 0 ){
+            newSongPosition = 0;
+        }
+        if( newSongPosition != songPosition ){
+            ui->pianoroll->setSongPosition( newSongPosition );
+            ui->pianoroll->repaint();
+        }
     }
 }
