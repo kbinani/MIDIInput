@@ -46,6 +46,11 @@ public:
      * @param timesigList テンポ変更リスト
      */
     void setTimesigList( VSQ_NS::TimesigList *timesigList );
+
+    /**
+     * @brief オーバーライドする。ピアノロール本体と、鍵盤部分を repaint する処理を追加している。
+     */
+    void repaint();
 };
 
 

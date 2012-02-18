@@ -44,3 +44,10 @@ void Pianoroll::setTimesigList( TimesigList *timesigList )
 {
     ui->content->setTimesigList( timesigList );
 }
+
+void Pianoroll::repaint()
+{
+    ui->content->repaint();
+    ui->keyboard->repaint();
+    QWidget::repaint();
+}
