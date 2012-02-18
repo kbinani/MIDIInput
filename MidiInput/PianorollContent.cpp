@@ -64,7 +64,7 @@ void PianorollContent::paintBackground( QPainter *g, QRect visibleArea ){
         int y = getYFromNoteNumber( noteNumber, trackHeight );
         int modura = getNoteModuration( noteNumber );
 
-        if( visibleArea.y() + visibleArea.height() < y ){
+        if( visibleArea.bottom() < y ){
             continue;
         }
 
@@ -78,8 +78,8 @@ void PianorollContent::paintBackground( QPainter *g, QRect visibleArea ){
         // 白鍵が隣り合う部分に境界線を書く
         if( modura == 11 || modura == 4 ){
             g->setPen( QColor( 210, 203, 173 ) );
-            g->drawLine( visibleArea.x(), y,
-                         visibleArea.x() + visibleArea.width(), y );
+            g->drawLine( visibleArea.left(), y,
+                         visibleArea.right(), y );
         }
 
         if( y < visibleArea.y() ){
@@ -98,10 +98,10 @@ void PianorollContent::paintItems( QPainter *g, QRect visibleArea ){
     QColor fillColor = QColor( 181, 220, 86 );
     g->setPen( QColor( 125, 123, 124 ) );
 
-    int visibleMinX = visibleArea.x();
-    int visibleMaxX = visibleArea.x() + visibleArea.width();
-    int visibleMinY = visibleArea.y();
-    int visibleMaxY = visibleArea.y() + visibleArea.height();
+    int visibleMinX = visibleArea.left();
+    int visibleMaxX = visibleArea.right();
+    int visibleMinY = visibleArea.top();
+    int visibleMaxY = visibleArea.bottom();
 
     for( int i = 0; i < count; i++ ){
         PianorollItem *item = items->at( i );
