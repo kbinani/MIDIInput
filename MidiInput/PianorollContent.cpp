@@ -182,6 +182,9 @@ void PianorollContent::paintSongPosition( QPainter *g, QRect visibleArea )
     int x = getXFromTick( songPosition );
     g->setPen( QColor( 0, 0, 0 ) );
     g->drawLine( x, visibleArea.top(), x, visibleArea.bottom() );
+    g->setPen( QColor( 0, 0, 0, 40 ) );
+    g->drawLine( x - 1, visibleArea.top(), x - 1, visibleArea.bottom() );
+    g->drawLine( x + 1, visibleArea.top(), x + 1, visibleArea.bottom() );
 }
 
 QRect PianorollContent::getVisibleArea()
