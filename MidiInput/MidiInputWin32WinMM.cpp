@@ -1,7 +1,7 @@
-#include <vector>
-#include <iostream>
+#include <Qt>
 #include "MidiInput.h"
-#include "WindowFinder.h"
+
+#ifdef QT_ARCH_WINDOWS
 
 using namespace std;
 
@@ -11,7 +11,6 @@ void MidiInput::setReceiver( MidiInputReceiver *aReceiver ){
     receiver = aReceiver;
 }
 
-#ifdef WIN32
 HMIDIIN MidiInput::deviceHandle = NULL;
 
 int MidiInput::getDeviceCount(){
@@ -87,25 +86,6 @@ void CALLBACK MidiInput::receive( HMIDIIN hMidiIn, UINT wMsg, DWORD_PTR dwInstan
             return;
         }
     }
-}
-#else
-
-int MidiInput::getDeviceCount(){
-    //TODO:
-    return 0;
-}
-
-const string MidiInput::getDeviceName( int index ){
-    //TODO:
-    return "";
-}
-
-void MidiInput::stop( int index ){
-    //TODO:
-}
-
-void MidiInput::start( int index ){
-    //TODO:
 }
 
 #endif

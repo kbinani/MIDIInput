@@ -13,7 +13,6 @@ SOURCES += \
     Dialog.cpp \
     DialogRunner.cpp \
     Robot.cpp \
-    MidiInput.cpp \
     WindowFinder.cpp \
     main.cpp \
     DialogListener.cpp \
@@ -21,7 +20,9 @@ SOURCES += \
     Pianoroll.cpp \
     PianorollContent.cpp \
     PianorollKeyboard.cpp \
-    PianorollContentScroller.cpp
+    PianorollContentScroller.cpp \
+    MidiInputWin32WinMM.cpp \
+    MidiInputMacCoreMIDI.cpp
 
 HEADERS += \
     Dialog.h \
@@ -62,6 +63,8 @@ win32:INCLUDEPATH += \
 
 unix:INCLUDEPATH += \
     /usr/include/lua5.1
+
+mac:LIBS += -framework CoreFoundation -framework CoreMidi
 
 RESOURCES += \
     MidiInput.qrc
