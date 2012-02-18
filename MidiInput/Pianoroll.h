@@ -28,6 +28,11 @@ public:
     void notifyVerticalScroll();
 
     void setTrackHeight( int trackHeight );
+
+    /**
+     * @brief ソングポジションを設定する
+     */
+    void setSongPosition( cadencii::vsq::tick_t songPosition );
 };
 
 

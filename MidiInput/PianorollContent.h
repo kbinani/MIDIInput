@@ -55,6 +55,11 @@ private:
      */
     double pixelPerTick;
 
+    /**
+     * @brief ソングポジション
+     */
+    cadencii::vsq::tick_t songPosition;
+
 public:
     /**
      * @brief ノート番号から、音名を表す番号を取得する。Cであれば0, C#であれば1など
@@ -120,6 +125,16 @@ public:
      */
     QRect getVisibleArea();
 
+    /**
+     * @brief ソングポジションを設定する
+     */
+    void setSongPosition( cadencii::vsq::tick_t songPosition );
+
+    /**
+     * @brief ソングポジションを取得する
+     */
+    cadencii::vsq::tick_t getSongPosition();
+
 private:
     /**
      * ピアノロールのバックグラウンドを描画する
@@ -135,6 +150,11 @@ private:
      * 1拍ごとの線を描画する
      */
     void paintMeasureLines( QPainter *g, QRect visibleArea );
+
+    /**
+     * @brief ソングポジションを描画する
+     */
+    void paintSongPosition( QPainter *g, QRect visibleArea );
 
     /**
      * tick 単位の時刻から、描画時の x 座標を取得する

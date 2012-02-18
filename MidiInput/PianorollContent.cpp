@@ -49,6 +49,7 @@ void PianorollContent::paintEvent( QPaintEvent * ){
     paintBackground( &p, visibleArea );
     paintMeasureLines( &p, visibleArea );
     paintItems( &p, visibleArea );
+    paintSongPosition( &p, visibleArea );
 }
 
 void PianorollContent::paintBackground( QPainter *g, QRect visibleArea ){
@@ -171,6 +172,13 @@ void PianorollContent::paintMeasureLines( QPainter *g, QRect visibleArea )
     }
 }
 
+void PianorollContent::paintSongPosition( QPainter *g, QRect visibleArea )
+{
+    int x = getXFromTick( songPosition );
+    g->setPen( QColor( 0, 0, 0 ) );
+    g->drawLine( x, visibleArea.top(), x, visibleArea.bottom() );
+}
+
 QRect PianorollContent::getVisibleArea()
 {
     QRect rect = this->getPaintArea();
@@ -224,4 +232,14 @@ int PianorollContent::getNoteOctave( int noteNumber )
 void PianorollContent::setPianoroll( Pianoroll *pianoroll )
 {
     this->pianoroll = pianoroll;
+}
+
+void PianorollContent::setSongPosition( tick_t songPosition )
+{
+    this->songPosition = songPosition;
+}
+
+tick_t PianorollContent::getSongPosition()
+{
+    return songPosition;
 }

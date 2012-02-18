@@ -29,3 +29,8 @@ void Pianoroll::setTrackHeight( int trackHeight )
     ui->content->setTrackHeight( trackHeight );
     ui->keyboard->setTrackHeight( trackHeight );
 }
+
+void Pianoroll::setSongPosition( tick_t songPosition )
+{
+    ui->content->setSongPosition( songPosition );
+}
