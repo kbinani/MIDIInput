@@ -128,13 +128,18 @@ void PianorollContent::mouseMoveEvent( QMouseEvent *e )
     QWidget::mouseMoveEvent( e );
 }
 
-void PianorollContent::setItems( std::vector<PianorollItem *> *items, TimesigList *timesigList ){
+void PianorollContent::setItems( std::vector<PianorollItem *> *items ){
     this->items = items;
+}
+
+void PianorollContent::setTimesigList( TimesigList *timesigList )
+{
+    MeasureLineIterator *previous = measureLineIterator;
     this->timesigList = timesigList;
-    if( this->measureLineIterator ){
-        delete this->measureLineIterator;
+    measureLineIterator = new MeasureLineIterator( this->timesigList );
+    if( previous ){
+        delete previous;
     }
-    this->measureLineIterator = new MeasureLineIterator( this->timesigList );
 }
 
 void PianorollContent::setTrackHeight( int trackHeight )

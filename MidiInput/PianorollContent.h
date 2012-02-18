@@ -94,9 +94,16 @@ public:
     ~PianorollContent();
 
     /**
-     * 描画対象のアイテムリストを設定する
+     * @brief 描画対象のアイテムリストを設定する
+     * @param items 描画対象のアイテム
      */
-    void setItems( std::vector<PianorollItem *> *items, cadencii::vsq::TimesigList *timesigList );
+    void setItems( std::vector<PianorollItem *> *items );
+
+    /**
+     * @brief テンポ変更リストを設定する
+     * @param timesigList テンポ変更リスト
+     */
+    void setTimesigList( VSQ_NS::TimesigList *timesigList );
 
     /**
      * オーバーライドする。ピアノロールの描画処理が追加される
