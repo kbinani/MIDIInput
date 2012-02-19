@@ -1,6 +1,7 @@
 #ifndef DIALOG_H
 #define DIALOG_H
 
+#include <map>
 #include <QDialog>
 #include <QMutex>
 #include <TimesigList.h>
@@ -26,7 +27,7 @@ private:
     /**
      * @brief 描画対象のリスト
      */
-    std::vector<PianorollItem *> items;
+    std::map<VSQ_NS::tick_t, PianorollItem *> items;
 
     /**
      * 左右キーを押した際に、ソングポジションが移動する量

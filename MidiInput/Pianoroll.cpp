@@ -75,7 +75,7 @@ void Pianoroll::setTimesigList( TimesigList *timesigList )
     ui->content->setTimesigList( timesigList );
 }
 
-void Pianoroll::setItems( vector<PianorollItem *> *items )
+void Pianoroll::setItems( map<tick_t, PianorollItem *> *items )
 {
     ui->content->setItems( items );
 }

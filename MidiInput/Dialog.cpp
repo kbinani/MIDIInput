@@ -200,9 +200,16 @@ void Dialog::send( unsigned char b1, unsigned char b2, unsigned char b3 )
             add->noteNumber = b2;
             add->phrase = "\xE3\x81\x82";
             add->symbols = "a";
-            add->tick = position;
             mutex->lock();
-            items.push_back( add );
+
+            map<tick_t, PianorollItem *>::iterator i = items.find( position );
+            if( i != items.end() ){
+                PianorollItem *item = i->second;
+                items.erase( i );
+                delete item;
+            }
+
+            items.insert( make_pair( position, add ) );
             mutex->unlock();
         }
 

@@ -106,10 +106,12 @@ void PianorollContent::paintItems( QPainter *g, QRect visibleArea ){
     int visibleMinY = visibleArea.top();
     int visibleMaxY = visibleArea.bottom();
 
-    for( int i = 0; i < count; i++ ){
-        PianorollItem *item = items->at( i );
-        int x = getXFromTick( item->tick );
-        int width = getXFromTick( item->tick + item->length ) - x;
+    map<tick_t, PianorollItem *>::iterator i = items->begin();
+    for( ; i != items->end(); i++ ){
+        PianorollItem *item = i->second;
+        tick_t tick = i->first;
+        int x = getXFromTick( tick );
+        int width = getXFromTick( tick + item->length ) - x;
 
         if( visibleMinX <= x + width && x <= visibleMaxX ){
             int y = getYFromNoteNumber( item->noteNumber, trackHeight ) + 1;
@@ -131,7 +133,7 @@ void PianorollContent::mouseMoveEvent( QMouseEvent *e )
     QWidget::mouseMoveEvent( e );
 }
 
-void PianorollContent::setItems( std::vector<PianorollItem *> *items ){
+void PianorollContent::setItems( map<tick_t, PianorollItem *> *items ){
     this->items = items;
 }
 

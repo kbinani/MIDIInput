@@ -7,11 +7,6 @@ class PianorollItem
 {
 public:
     /**
-     * tick 単位の時刻
-     */
-    long int tick;
-
-    /**
      * ノート番号
      */
     int noteNumber;

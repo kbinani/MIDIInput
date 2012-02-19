@@ -1,7 +1,7 @@
 #ifndef PIANOROLL_H
 #define PIANOROLL_H
 
-#include <vector>
+#include <map>
 #include <QScrollArea>
 #include <QMutex>
 #include <MeasureLineIterator.h>
@@ -55,7 +55,7 @@ public:
      * @brief 描画対象のアイテムリストを設定する
      * @param items 描画対象のアイテム
      */
-    void setItems( std::vector<PianorollItem *> *items );
+    void setItems( std::map<VSQ_NS::tick_t, PianorollItem *> *items );
 
     /**
      * @brief オーバーライドする。ピアノロール本体と、鍵盤部分を repaint する処理を追加している。

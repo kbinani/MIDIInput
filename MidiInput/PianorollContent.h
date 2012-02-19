@@ -1,6 +1,7 @@
 #ifndef __PianorollContent_h__
 #define __PianorollContent_h__
 
+#include <map>
 #include <QWidget>
 #include <QMutex>
 #include <TimesigList.h>
@@ -27,9 +28,9 @@ private:
     Pianoroll *pianoroll;
 
     /**
-     * 描画されるアイテムの一覧
+     * @brief 描画されるアイテムの一覧
      */
-    std::vector<PianorollItem *> *items;
+    std::map<VSQ_NS::tick_t, PianorollItem *> *items;
 
     /**
      * 拍ごとの線を描画するための、拍子変更情報
@@ -103,7 +104,7 @@ public:
      * @brief 描画対象のアイテムリストを設定する
      * @param items 描画対象のアイテム
      */
-    void setItems( std::vector<PianorollItem *> *items );
+    void setItems( std::map<VSQ_NS::tick_t, PianorollItem *> *items );
 
     /**
      * @brief テンポ変更リストを設定する
