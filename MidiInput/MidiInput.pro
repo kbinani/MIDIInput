@@ -5,7 +5,9 @@
 #-------------------------------------------------
 
 TARGET = MidiInput
-TEMPLATE = app
+
+CONFIG(release, debug|release):TEMPLATE = lib
+else:TEMPLATE = app
 
 QT       += core gui
 
