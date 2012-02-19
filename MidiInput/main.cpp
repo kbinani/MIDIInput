@@ -11,6 +11,7 @@ extern "C"{
 #include "WindowFinder.h"
 #include "MidiInput.h"
 #include "Dialog.h"
+#include "DialogRunner.h"
 
 using namespace std;
 
@@ -27,15 +28,18 @@ extern "C" Q_DECL_EXPORT int start( lua_State *state ){
     const char *timesigText = lua_tostring( state, 2 );
     string eventTextString( eventText );
     string timesigTextString( timesigText );
-    Dialog dialog( eventTextString, timesigTextString );
-    dialog.exec();
+    DialogRunner runner( eventTextString, timesigTextString );
+    runner.start();
+    runner.wait();
 
-    string result = dialog.getMetaText();
+//    string result = dialog.getMetaText();
+    string result = eventTextString;
 
-    lua_pushstring( state, result.c_str() );
+    lua_pushstring( state, "foo" );//result.c_str() );
     return 1;
 }
 
+#ifdef QT_DEBUG
 int main( int argc, char *argv[] ){
     QApplication app( argc, argv );
     ostringstream oss;
@@ -54,3 +58,5 @@ int main( int argc, char *argv[] ){
     d.show();
     return app.exec();
 }
+#endif
+

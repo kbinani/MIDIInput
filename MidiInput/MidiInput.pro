@@ -22,7 +22,8 @@ SOURCES += \
     PianorollKeyboard.cpp \
     PianorollContentScroller.cpp \
     MidiInputWin32WinMM.cpp \
-    MidiInputMacCoreMIDI.cpp
+    MidiInputMacCoreMIDI.cpp \
+    DialogRunner.cpp
 
 HEADERS += \
     Dialog.h \
@@ -34,7 +35,8 @@ HEADERS += \
     Pianoroll.h \
     PianorollContent.h \
     PianorollKeyboard.h \
-    PianorollContentScroller.h
+    PianorollContentScroller.h \
+    DialogRunner.h
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib
