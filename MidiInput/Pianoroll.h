@@ -23,6 +23,7 @@ class Pianoroll : public QWidget
 private:
     /**
      * @brief ソングポジションの移動に伴って自動スクロールするかどうか
+     * @todo 自動スクロールするかどうかは親が決めるようにする
      */
     bool autoScroll;
 
@@ -35,9 +36,10 @@ public:
 
     /**
      * @brief ソングポジションを設定する
-     * @param ソングポジション
+     * @param songPosition ソングポジション
+     * @param autoScroll 自動でスクロールするかどうか
      */
-    void setSongPosition( VSQ_NS::tick_t songPosition );
+    void setSongPosition( VSQ_NS::tick_t songPosition, bool autoScroll );
 
     /**
      * @brief ソングポジションを取得する
@@ -73,6 +75,20 @@ public:
      * @param autoScroll 自動スクロールする場合は true を設定する
      */
     void setAutoScroll( bool autoScroll );
+
+    /**
+     * @brief ソングポジションの移動に伴って自動スクロールするかどうかを取得する
+     * @return 自動スクロールする場合は true を返す
+     */
+    bool isAutoScroll();
+
+    /**
+     * @brief 指定した位置の音符が可視となるようスクロールする
+     * @param tick 時刻
+     * @param length 音符の長さ
+     * @param noteNumber ノート番号
+     */
+    void ensureNoteVisible( VSQ_NS::tick_t tick, VSQ_NS::tick_t length, int noteNumber );
 
 private:
     /**

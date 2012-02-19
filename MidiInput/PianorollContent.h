@@ -129,6 +129,12 @@ public:
     void setTrackHeight( int trackHeight );
 
     /**
+     * @brief ノートの描画高さを取得する
+     * @return ノートの描画高さ
+     */
+    int getTrackHeight();
+
+    /**
      * @brief このインスタンスを持っているピアノロールを設定する
      * @param pianoroll ピアノロール
      */

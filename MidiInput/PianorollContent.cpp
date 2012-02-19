@@ -153,6 +153,11 @@ void PianorollContent::setTrackHeight( int trackHeight )
     this->setMinimumHeight( this->getMinimumHeight() );
 }
 
+int PianorollContent::getTrackHeight()
+{
+    return trackHeight;
+}
+
 void PianorollContent::paintMeasureLines( QPainter *g, QRect visibleArea )
 {
     int top = visibleArea.y();

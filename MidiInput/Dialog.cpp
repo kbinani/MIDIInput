@@ -39,10 +39,11 @@ Dialog::Dialog( QWidget *parent ) :
     timesigList->push( Timesig( 4, 4, 0 ) );
     ui->pianoroll->setTimesigList( timesigList );
     ui->pianoroll->setItems( &items );
-    ui->pianoroll->setSongPosition( 0 );
+    bool autoScroll = true;
+    ui->pianoroll->setSongPosition( 0, autoScroll );
     mutex = new QMutex();
     ui->pianoroll->setMutex( mutex );
-    ui->pianoroll->setAutoScroll( true );
+    ui->pianoroll->setAutoScroll( autoScroll );
 
     connect( this, SIGNAL(doRepaint()), SLOT(onRepaintRequired()) );
 }
@@ -88,7 +89,7 @@ void Dialog::keyPressEvent( QKeyEvent *e )
             newSongPosition = 0;
         }
         if( newSongPosition != songPosition ){
-            ui->pianoroll->setSongPosition( newSongPosition );
+            ui->pianoroll->setSongPosition( newSongPosition, ui->pianoroll->isAutoScroll() );
             ui->pianoroll->repaint();
         }
     }
@@ -193,6 +194,7 @@ void Dialog::send( unsigned char b1, unsigned char b2, unsigned char b3 )
     if( command == 0x90 && b3 != 0 ){
         tick_t length = stepUnit;
         tick_t position = ui->pianoroll->getSongPosition();
+        int noteNumber = b2;
 
         mutex->lock();
         map<tick_t, PianorollItem *>::iterator i = items.find( position );
@@ -205,7 +207,7 @@ void Dialog::send( unsigned char b1, unsigned char b2, unsigned char b3 )
         }else{
             PianorollItem *add = new PianorollItem();
             add->length = length;
-            add->noteNumber = b2;
+            add->noteNumber = noteNumber;
             add->phrase = "\xE3\x81\x82";
             add->symbols = "a";
 
@@ -219,7 +221,10 @@ void Dialog::send( unsigned char b1, unsigned char b2, unsigned char b3 )
         }
         mutex->unlock();
 
-        ui->pianoroll->setSongPosition( position + length );
+        if( !isRest ){
+            ui->pianoroll->ensureNoteVisible( position, length, noteNumber );
+        }
+        ui->pianoroll->setSongPosition( position + length, isRest );
         emit doRepaint();
     }
 }

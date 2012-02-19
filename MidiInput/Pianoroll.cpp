@@ -32,7 +32,7 @@ void Pianoroll::setTrackHeight( int trackHeight )
     ui->keyboard->setTrackHeight( trackHeight );
 }
 
-void Pianoroll::setSongPosition( tick_t songPosition )
+void Pianoroll::setSongPosition( tick_t songPosition, bool autoScroll )
 {
     tick_t lastSongPosition = ui->content->getSongPosition();
     ui->content->setSongPosition( songPosition );
@@ -95,4 +95,51 @@ void Pianoroll::setMutex( QMutex *mutex )
 void Pianoroll::setAutoScroll( bool autoScroll )
 {
     this->autoScroll = autoScroll;
+}
+
+bool Pianoroll::isAutoScroll()
+{
+    return autoScroll;
+}
+
+void Pianoroll::ensureNoteVisible( tick_t tick, tick_t length, int noteNumber )
+{
+    int left = ui->content->getXFromTick( tick );
+    int right = ui->content->getXFromTick( tick + length );
+    int trackHeight = ui->content->getTrackHeight();
+    int top = ui->content->getYFromNoteNumber( noteNumber, trackHeight );
+    int bottom = top + trackHeight;
+
+    QRect visibleArea = ui->content->getVisibleArea();
+    QScrollBar *horizontalScrollBar = ui->scrollArea->horizontalScrollBar();
+    QScrollBar *verticalScrollBar = ui->scrollArea->verticalScrollBar();
+    int dx = 0;
+    int newValue = verticalScrollBar->value();
+    if( visibleArea.right() < right ){
+        dx = ui->scrollArea->width() - (right - left);
+    }else if( left < visibleArea.left() ){
+        dx = -ui->scrollArea->width() + (right - left);
+    }
+    if( top < visibleArea.top() || visibleArea.bottom() < bottom ){
+        newValue = (bottom + top) / 2 - visibleArea.height() / 2;
+    }
+    if( dx ){
+        int value = horizontalScrollBar->value() + dx;
+        if( value < horizontalScrollBar->minimum() ){
+            horizontalScrollBar->setValue( horizontalScrollBar->minimum() );
+        }else if( horizontalScrollBar->maximum() < value ){
+            horizontalScrollBar->setValue( horizontalScrollBar->maximum() );
+        }else{
+            horizontalScrollBar->setValue( value );
+        }
+    }
+    if( verticalScrollBar->value() != newValue ){
+        if( newValue < verticalScrollBar->minimum() ){
+            verticalScrollBar->setValue( verticalScrollBar->minimum() );
+        }else if( verticalScrollBar->maximum() < newValue ){
+            verticalScrollBar->setValue( verticalScrollBar->maximum() );
+        }else{
+            verticalScrollBar->setValue( newValue );
+        }
+    }
 }
