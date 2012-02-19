@@ -99,7 +99,7 @@ void PianorollContent::paintItems( QPainter *g, QRect visibleArea ){
     int height = trackHeight - 1;
 
     QColor fillColor = QColor( 181, 220, 86 );
-    g->setPen( QColor( 125, 123, 124 ) );
+    QColor borderColor = QColor( 125, 123, 124 );
 
     int visibleMinX = visibleArea.left();
     int visibleMaxX = visibleArea.right();
@@ -117,6 +117,7 @@ void PianorollContent::paintItems( QPainter *g, QRect visibleArea ){
             int y = getYFromNoteNumber( item->noteNumber, trackHeight ) + 1;
             if( visibleMinY <= y + height && y <= visibleMaxY ){
                 g->fillRect( x, y, width, height, fillColor );
+                g->setPen( borderColor );
                 g->drawRect( x, y, width, height );
 
                 g->setPen( QColor( 0, 0, 0 ) );
