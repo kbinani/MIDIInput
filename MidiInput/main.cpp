@@ -6,6 +6,7 @@ extern "C"{
 
 #include <stdio.h>
 #include <iostream>
+#include <sstream>
 #include <QApplication>
 #include "WindowFinder.h"
 #include "MidiInput.h"
@@ -18,14 +19,15 @@ using namespace std;
  */
 extern "C" Q_DECL_EXPORT int start( lua_State *state ){
     int argc = lua_gettop( state );
-    if( argc != 1 ){
+    if( argc != 2 ){
         return 0;
     }
 
-    size_t length;
-    const char* metaText = lua_tostring( state, 1, &length );
-    string metaTextString( metaText );
-    Dialog dialog( metaTextString );
+    const char *eventText = lua_tostring( state, 1 );
+    const char *timesigText = lua_tostring( state, 2 );
+    string eventTextString( eventText );
+    string timesigTextString( timesigText );
+    Dialog dialog( eventTextString, timesigTextString );
     dialog.exec();
 
     string result = dialog.getMetaText();
@@ -36,7 +38,19 @@ extern "C" Q_DECL_EXPORT int start( lua_State *state ){
 
 int main( int argc, char *argv[] ){
     QApplication app( argc, argv );
-    Dialog d( string( "" ), NULL );
+    ostringstream oss;
+    oss << "0,62,a,w a,480";
+    oss << "\x0A";
+    oss << "480,64,ra,4 a,480";
+    string eventText = oss.str();
+
+    oss.str( "" );
+    oss.clear( ostringstream::goodbit );
+    oss << "0,4,4";
+    oss << "\x0A";
+    oss << "1920,3,4";
+    string timesigText = oss.str();
+    Dialog d( eventText, timesigText, NULL );
     d.show();
     return app.exec();
 }

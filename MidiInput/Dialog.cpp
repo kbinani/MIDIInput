@@ -1,5 +1,6 @@
 #include <sstream>
 #include <QKeyEvent>
+#include <QString>
 #include "MidiInput.h"
 #include "Dialog.h"
 #include "Pianoroll.h"
@@ -8,7 +9,7 @@
 using namespace std;
 using namespace VSQ_NS;
 
-Dialog::Dialog( const string &metaText, QWidget *parent ) :
+Dialog::Dialog( const string &eventText, const string &timesigText, QWidget *parent ) :
     QDialog( parent ),
     ui( new Ui::Dialog )
 {
@@ -43,6 +44,9 @@ Dialog::Dialog( const string &metaText, QWidget *parent ) :
     ui->pianoroll->setSongPosition( 0, false );
     mutex = new QMutex();
     ui->pianoroll->setMutex( mutex );
+
+    parseEventText( eventText, items );
+    parseTimesigText( timesigText, *timesigList );
 
     connect( this, SIGNAL(doRepaint()), SLOT(onRepaintRequired()) );
 }
@@ -236,4 +240,46 @@ void Dialog::onRepaintRequired()
 const string Dialog::getMetaText()
 {
     return metaText;
+}
+
+void Dialog::parseEventText( const string &eventText, map<tick_t, PianorollItem *> &list )
+{
+    QStringList lines = QString::fromStdString( eventText ).split( "\x0A" );
+    for( int i = 0; i < lines.size(); i++ ){
+        QString line = lines[i];
+        QStringList parameters = line.split( "," );
+
+        tick_t tick = (tick_t)parameters[0].toLong();
+        int noteNumber = parameters[1].toInt();
+        string phrase = parameters[2].toStdString();
+        string symbol = parameters[3].toStdString();
+        tick_t length = (tick_t)parameters[4].toLong();
+
+        PianorollItem *item = new PianorollItem();
+        item->noteNumber = noteNumber;
+        item->phrase = phrase;
+        item->symbols = symbol;
+        item->length = length;
+
+        if( list.find( tick ) != list.end() ){
+            delete list.find( tick )->second;
+        }
+        list.insert( make_pair( tick, item ) );
+    }
+}
+
+void Dialog::parseTimesigText( const string &timesigText, TimesigList &list )
+{
+    QStringList lines = QString::fromStdString( timesigText ).split( "\x0A" );
+    for( int i = 0; i < lines.size(); i++ ){
+        QString line = lines[i];
+        QStringList parameters = line.split( "," );
+        tick_t tick = (tick_t)parameters[0].toLong();
+        int numerator = parameters[1].toInt();
+        int denominator = parameters[2].toInt();
+
+        Timesig timesig = list.getTimesigAt( tick );
+        list.push( Timesig( numerator, denominator, timesig.barCount ) );
+        list.updateTimesigInfo();
+    }
 }

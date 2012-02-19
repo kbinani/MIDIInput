@@ -66,11 +66,30 @@ private:
 
 public:
     /**
+     * @brief イベント情報が記録されたテキストを parse する
+     * @param eventText イベントが記録されたテキスト
+     *     480,60,あ,a,480
+     *     940,62,わ,w a,480
+     *     {tick},{noteNumber},{phrase},{symbol},{length}
+     * @param list parse 結果の格納先
+     */
+    static void parseEventText( const std::string &eventText, std::map<VSQ_NS::tick_t, PianorollItem *> &list );
+
+    /**
+     * @brief 拍子変更情報が記録されたテキスト
+     * @param timesigText 拍子変更情報が記録されたテキスト
+     *     0,4,4
+     *     {tick},{numerator},{denominator}
+     * @param list parse 結果の格納先
+     */
+    static void parseTimesigText( const std::string &timesigText, VSQ_NS::TimesigList &list );
+
+    /**
      * @brief コンストラクタ
-     * @param metaText メタテキスト
+     * @param eventText ノート情報を記録したメタテキスト
      * @param ダイアログの親
      */
-    explicit Dialog( const std::string &metaText, QWidget *parent = 0 );
+    explicit Dialog( const std::string &eventText, const std::string &timesigText, QWidget *parent = 0 );
 
     ~Dialog();
 
@@ -129,6 +148,7 @@ private:
      * MIDI 入力終了が要求されたとき呼ばれる
      */
     void inputStopRequired();
+
 };
 
 #endif // DIALOG_H
