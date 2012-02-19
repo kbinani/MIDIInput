@@ -27,8 +27,8 @@ Dialog::Dialog( QWidget *parent ) :
 
     int count = MidiInput::getDeviceCount();
     for( int i = 0; i < count; i++ ){
-        string name = MidiInput::getDeviceName( i );
-        ui->comboBox->addItem( QString::fromStdString( name ) );
+        QString name = MidiInput::getDeviceName( i );
+        ui->comboBox->addItem( name );
     }
     if( ui->comboBox->count() > 0 ){
         ui->comboBox->setEnabled( true );

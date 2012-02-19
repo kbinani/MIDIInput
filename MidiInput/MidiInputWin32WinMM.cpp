@@ -17,12 +17,11 @@ int MidiInput::getDeviceCount(){
     return (int)midiInGetNumDevs();
 }
 
-const string MidiInput::getDeviceName( int index ){
+const QString MidiInput::getDeviceName( int index ){
     MIDIINCAPSA caps;
     memset( &caps, 0, sizeof( MIDIINCAPSA ) );
     midiInGetDevCapsA( index, &caps, sizeof( MIDIINCAPSA ) );
-    string result = caps.szPname;
-    return result;
+    return QString::fromStdString( string( caps.szPname ) );
 }
 
 void MidiInput::start( int index ){

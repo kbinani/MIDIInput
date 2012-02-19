@@ -4,6 +4,7 @@
 #ifdef WIN32
 #include <windows.h>
 #endif
+#include <QString>
 #include <string>
 #include "MidiInputReceiver.h"
 
@@ -24,7 +25,7 @@ public:
     /**
      * 指定した番号の MIDI 入力ポートのデバイス名を取得する
      */
-    static const std::string getDeviceName( int index );
+    static const QString getDeviceName( int index );
 
     static void setReceiver( MidiInputReceiver *receiver );
 
