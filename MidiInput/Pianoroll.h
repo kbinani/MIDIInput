@@ -20,13 +20,6 @@ class Pianoroll : public QWidget
 
     Q_OBJECT
 
-private:
-    /**
-     * @brief ソングポジションの移動に伴って自動スクロールするかどうか
-     * @todo 自動スクロールするかどうかは親が決めるようにする
-     */
-    bool autoScroll;
-
 public:
     Ui::Pianoroll *ui;
 
@@ -69,12 +62,6 @@ public:
      * @param mutex ミューテックス
      */
     void setMutex( QMutex *mutex );
-
-    /**
-     * @brief ソングポジションの移動に伴って自動スクロールするかどうかを設定する
-     * @param autoScroll 自動スクロールする場合は true を設定する
-     */
-    void setAutoScroll( bool autoScroll );
 
     /**
      * @brief ソングポジションの移動に伴って自動スクロールするかどうかを取得する

@@ -18,6 +18,7 @@ Dialog::Dialog( QWidget *parent ) :
     isRest = false;
     ui->toolButtonNote004->toggle();
     inputStarted = false;
+    autoScroll = true;
 
     ui->pushButtonInputToggle->setEnabled( false );
     ui->comboBox->clear();
@@ -39,11 +40,9 @@ Dialog::Dialog( QWidget *parent ) :
     timesigList->push( Timesig( 4, 4, 0 ) );
     ui->pianoroll->setTimesigList( timesigList );
     ui->pianoroll->setItems( &items );
-    bool autoScroll = true;
-    ui->pianoroll->setSongPosition( 0, autoScroll );
+    ui->pianoroll->setSongPosition( 0, false );
     mutex = new QMutex();
     ui->pianoroll->setMutex( mutex );
-    ui->pianoroll->setAutoScroll( autoScroll );
 
     connect( this, SIGNAL(doRepaint()), SLOT(onRepaintRequired()) );
 }
@@ -89,7 +88,7 @@ void Dialog::keyPressEvent( QKeyEvent *e )
             newSongPosition = 0;
         }
         if( newSongPosition != songPosition ){
-            ui->pianoroll->setSongPosition( newSongPosition, ui->pianoroll->isAutoScroll() );
+            ui->pianoroll->setSongPosition( newSongPosition, autoScroll );
             ui->pianoroll->repaint();
         }
     }

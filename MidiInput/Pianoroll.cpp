@@ -17,7 +17,6 @@ Pianoroll::Pianoroll( QWidget *parent ) :
     ui->content->setPianoroll( this );
     ui->keyboard->setPianoroll( this );
     ui->keyboard->notifyVerticalScroll( 0 );
-    autoScroll = true;
 }
 
 void Pianoroll::notifyVerticalScroll()
@@ -90,16 +89,6 @@ void Pianoroll::repaint()
 void Pianoroll::setMutex( QMutex *mutex )
 {
     ui->content->setMutex( mutex );
-}
-
-void Pianoroll::setAutoScroll( bool autoScroll )
-{
-    this->autoScroll = autoScroll;
-}
-
-bool Pianoroll::isAutoScroll()
-{
-    return autoScroll;
 }
 
 void Pianoroll::ensureNoteVisible( tick_t tick, tick_t length, int noteNumber )

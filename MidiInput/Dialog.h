@@ -54,6 +54,11 @@ private:
      */
     QMutex *mutex;
 
+    /**
+     * @brief ソングポジションの移動に伴って自動スクロールするかどうか
+     */
+    bool autoScroll;
+
 public:
     explicit Dialog( QWidget *parent = 0 );
 
