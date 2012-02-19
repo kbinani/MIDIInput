@@ -59,14 +59,30 @@ private:
      */
     bool autoScroll;
 
+    /**
+     * @brief メタテキスト
+     */
+    std::string metaText;
+
 public:
-    explicit Dialog( QWidget *parent = 0 );
+    /**
+     * @brief コンストラクタ
+     * @param metaText メタテキスト
+     * @param ダイアログの親
+     */
+    explicit Dialog( const std::string &metaText, QWidget *parent = 0 );
 
     ~Dialog();
 
     void keyPressEvent( QKeyEvent *e );
     
     void send( unsigned char b1, unsigned char b2, unsigned char b3 );
+
+    /**
+     * @brief 編集結果のメタテキストを取得する
+     * @return メタテキスト
+     */
+    const std::string getMetaText();
 
 signals:
     /**

@@ -11,11 +11,9 @@ QT       += core gui
 
 SOURCES += \
     Dialog.cpp \
-    DialogRunner.cpp \
     Robot.cpp \
     WindowFinder.cpp \
     main.cpp \
-    DialogListener.cpp \
     PianorollItem.cpp \
     Pianoroll.cpp \
     PianorollContent.cpp \
@@ -26,12 +24,10 @@ SOURCES += \
 
 HEADERS += \
     Dialog.h \
-    DialogRunner.h \
     MidiInputReceiver.h \
     MidiInput.h \
     WindowFinder.h \
     Robot.h \
-    DialogListener.h \
     PianorollItem.h \
     Pianoroll.h \
     PianorollContent.h \

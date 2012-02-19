@@ -8,7 +8,7 @@
 using namespace std;
 using namespace VSQ_NS;
 
-Dialog::Dialog( QWidget *parent ) :
+Dialog::Dialog( const string &metaText, QWidget *parent ) :
     QDialog( parent ),
     ui( new Ui::Dialog )
 {
@@ -231,4 +231,9 @@ void Dialog::send( unsigned char b1, unsigned char b2, unsigned char b3 )
 void Dialog::onRepaintRequired()
 {
     ui->pianoroll->repaint();
+}
+
+const string Dialog::getMetaText()
+{
+    return metaText;
 }
