@@ -194,15 +194,21 @@ void Dialog::send( unsigned char b1, unsigned char b2, unsigned char b3 )
         tick_t length = stepUnit;
         tick_t position = ui->pianoroll->getSongPosition();
 
-        if( !isRest ){
+        mutex->lock();
+        map<tick_t, PianorollItem *>::iterator i = items.find( position );
+        if( isRest ){
+            if( i != items.end() ){
+                PianorollItem *item = i->second;
+                items.erase( i );
+                delete item;
+            }
+        }else{
             PianorollItem *add = new PianorollItem();
             add->length = length;
             add->noteNumber = b2;
             add->phrase = "\xE3\x81\x82";
             add->symbols = "a";
-            mutex->lock();
 
-            map<tick_t, PianorollItem *>::iterator i = items.find( position );
             if( i != items.end() ){
                 PianorollItem *item = i->second;
                 items.erase( i );
@@ -210,8 +216,8 @@ void Dialog::send( unsigned char b1, unsigned char b2, unsigned char b3 )
             }
 
             items.insert( make_pair( position, add ) );
-            mutex->unlock();
         }
+        mutex->unlock();
 
         ui->pianoroll->setSongPosition( position + length );
         emit doRepaint();
