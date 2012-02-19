@@ -9,7 +9,7 @@
 using namespace std;
 using namespace VSQ_NS;
 
-Dialog::Dialog( const string &eventText, const string &timesigText, QWidget *parent ) :
+Dialog::Dialog( const string eventText, const string timesigText, QWidget *parent ) :
     QDialog( parent ),
     ui( new Ui::Dialog )
 {
@@ -37,16 +37,13 @@ Dialog::Dialog( const string &eventText, const string &timesigText, QWidget *par
         ui->pushButtonInputToggle->setEnabled( true );
     }
 
-    timesigList = new TimesigList();
-    timesigList->push( Timesig( 4, 4, 0 ) );
+    mutex = new QMutex();
+    parseTimesigText( timesigText );
+    parseEventText( eventText );
     ui->pianoroll->setTimesigList( timesigList );
     ui->pianoroll->setItems( &items );
     ui->pianoroll->setSongPosition( 0, false );
-    mutex = new QMutex();
     ui->pianoroll->setMutex( mutex );
-
-    parseEventText( eventText, items );
-    parseTimesigText( timesigText, *timesigList );
 
     connect( this, SIGNAL(doRepaint()), SLOT(onRepaintRequired()) );
 }
@@ -242,12 +239,20 @@ const string Dialog::getMetaText()
     return metaText;
 }
 
-void Dialog::parseEventText( const string &eventText, map<tick_t, PianorollItem *> &list )
+void Dialog::parseEventText( const string eventText )
 {
+    mutex->lock();
+
     QStringList lines = QString::fromStdString( eventText ).split( "\x0A" );
     for( int i = 0; i < lines.size(); i++ ){
         QString line = lines[i];
+        if( line.size() == 0 ){
+            continue;
+        }
         QStringList parameters = line.split( "," );
+        if( parameters.size() < 5 ){
+            continue;
+        }
 
         tick_t tick = (tick_t)parameters[0].toLong();
         int noteNumber = parameters[1].toInt();
@@ -261,25 +266,34 @@ void Dialog::parseEventText( const string &eventText, map<tick_t, PianorollItem 
         item->symbols = symbol;
         item->length = length;
 
-        if( list.find( tick ) != list.end() ){
-            delete list.find( tick )->second;
+        if( items.find( tick ) != items.end() ){
+            delete items.find( tick )->second;
         }
-        list.insert( make_pair( tick, item ) );
+        items.insert( make_pair( tick, item ) );
     }
+
+    mutex->unlock();
 }
 
-void Dialog::parseTimesigText( const string &timesigText, TimesigList &list )
+void Dialog::parseTimesigText( const string timesigText )
 {
+    timesigList = new TimesigList();
     QStringList lines = QString::fromStdString( timesigText ).split( "\x0A" );
     for( int i = 0; i < lines.size(); i++ ){
         QString line = lines[i];
+        if( line.size() == 0 ){
+            continue;
+        }
         QStringList parameters = line.split( "," );
+        if( parameters.size() < 3 ){
+            continue;
+        }
         tick_t tick = (tick_t)parameters[0].toLong();
         int numerator = parameters[1].toInt();
         int denominator = parameters[2].toInt();
 
-        Timesig timesig = list.getTimesigAt( tick );
-        list.push( Timesig( numerator, denominator, timesig.barCount ) );
-        list.updateTimesigInfo();
+        Timesig timesig = timesigList->getTimesigAt( tick );
+        timesigList->push( Timesig( numerator, denominator, timesig.barCount ) );
+        timesigList->updateTimesigInfo();
     }
 }
