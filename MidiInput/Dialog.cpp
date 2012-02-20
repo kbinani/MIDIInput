@@ -4,6 +4,7 @@
 #include "MidiInput.h"
 #include "Dialog.h"
 #include "Pianoroll.h"
+#include "Parser.h"
 #include "ui_Dialog.h"
 
 using namespace std;
@@ -38,10 +39,11 @@ Dialog::Dialog( const string eventText, const string timesigText, QWidget *paren
     }
 
     mutex = new QMutex();
-    parseTimesigText( timesigText );
-    parseEventText( eventText );
+    Parser parser;
+    timesigList = parser.getTimesig( timesigText );
+    items = parser.getEvent( eventText );
     ui->pianoroll->setTimesigList( timesigList );
-    ui->pianoroll->setItems( &items );
+    ui->pianoroll->setItems( items );
     ui->pianoroll->setSongPosition( 0, false );
     ui->pianoroll->setMutex( mutex );
 
@@ -52,13 +54,14 @@ Dialog::~Dialog()
 {
     delete ui;
     delete timesigList;
-    for( int i = 0; i < items.size(); i++ ){
-        PianorollItem *item = items[i];
+    for( map<tick_t, PianorollItem *>::iterator i = items->begin(); i != items->end(); i++ ){
+        PianorollItem *item = i->second;
         if( item ){
             delete item;
         }
     }
-    items.clear();
+    items->clear();
+    delete items;
     delete mutex;
 }
 
@@ -197,11 +200,11 @@ void Dialog::send( unsigned char b1, unsigned char b2, unsigned char b3 )
         int noteNumber = b2;
 
         mutex->lock();
-        map<tick_t, PianorollItem *>::iterator i = items.find( position );
+        map<tick_t, PianorollItem *>::iterator i = items->find( position );
         if( isRest ){
-            if( i != items.end() ){
+            if( i != items->end() ){
                 PianorollItem *item = i->second;
-                items.erase( i );
+                items->erase( i );
                 delete item;
             }
         }else{
@@ -211,13 +214,13 @@ void Dialog::send( unsigned char b1, unsigned char b2, unsigned char b3 )
             add->phrase = "\xE3\x81\x82";
             add->symbols = "a";
 
-            if( i != items.end() ){
+            if( i != items->end() ){
                 PianorollItem *item = i->second;
-                items.erase( i );
+                items->erase( i );
                 delete item;
             }
 
-            items.insert( make_pair( position, add ) );
+            items->insert( make_pair( position, add ) );
         }
         mutex->unlock();
 
@@ -237,63 +240,4 @@ void Dialog::onRepaintRequired()
 const string Dialog::getMetaText()
 {
     return metaText;
-}
-
-void Dialog::parseEventText( const string eventText )
-{
-    mutex->lock();
-
-    QStringList lines = QString::fromStdString( eventText ).split( "\x0A" );
-    for( int i = 0; i < lines.size(); i++ ){
-        QString line = lines[i];
-        if( line.size() == 0 ){
-            continue;
-        }
-        QStringList parameters = line.split( "," );
-        if( parameters.size() < 5 ){
-            continue;
-        }
-
-        tick_t tick = (tick_t)parameters[0].toLong();
-        int noteNumber = parameters[1].toInt();
-        string phrase = parameters[2].toStdString();
-        string symbol = parameters[3].toStdString();
-        tick_t length = (tick_t)parameters[4].toLong();
-
-        PianorollItem *item = new PianorollItem();
-        item->noteNumber = noteNumber;
-        item->phrase = phrase;
-        item->symbols = symbol;
-        item->length = length;
-
-        if( items.find( tick ) != items.end() ){
-            delete items.find( tick )->second;
-        }
-        items.insert( make_pair( tick, item ) );
-    }
-
-    mutex->unlock();
-}
-
-void Dialog::parseTimesigText( const string timesigText )
-{
-    timesigList = new TimesigList();
-    QStringList lines = QString::fromStdString( timesigText ).split( "\x0A" );
-    for( int i = 0; i < lines.size(); i++ ){
-        QString line = lines[i];
-        if( line.size() == 0 ){
-            continue;
-        }
-        QStringList parameters = line.split( "," );
-        if( parameters.size() < 3 ){
-            continue;
-        }
-        tick_t tick = (tick_t)parameters[0].toLong();
-        int numerator = parameters[1].toInt();
-        int denominator = parameters[2].toInt();
-
-        Timesig timesig = timesigList->getTimesigAt( tick );
-        timesigList->push( Timesig( numerator, denominator, timesig.barCount ) );
-        timesigList->updateTimesigInfo();
-    }
 }
