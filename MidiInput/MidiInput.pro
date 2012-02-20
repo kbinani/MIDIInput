@@ -24,7 +24,8 @@ SOURCES += \
     MidiInputWin32WinMM.cpp \
     MidiInputMacCoreMIDI.cpp \
     DialogRunner.cpp \
-    Parser.cpp
+    Parser.cpp \
+    VSLuaNoteEx.cpp
 
 HEADERS += \
     Dialog.h \
@@ -39,7 +40,8 @@ HEADERS += \
     PianorollContentScroller.h \
     DialogRunner.h \
     Parser.h \
-    StringUtil.h
+    StringUtil.h \
+    VSLuaNoteEx.h
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib

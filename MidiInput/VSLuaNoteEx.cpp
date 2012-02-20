@@ -25,6 +25,16 @@ VSLuaNoteEx::VSLuaNoteEx( const string line )
 
     string parse = line;
     chomp( parse );
+    if( 0 < parse.length() ){
+        if( parse[0] == '{' ){
+            parse = parse.substr( 1 );
+        }
+    }
+    if( 0 < parse.length() ){
+        if( parse[parse.length() - 1] == '}' ){
+            parse = parse.substr( 0, parse.length() - 1 );
+        }
+    }
     vector<string> parameters = StringUtil::explode( ",", parse, string::npos, "\\" );
     for( int i = 0; i < parameters.size(); i++ ){
         string parameter = parameters[i];

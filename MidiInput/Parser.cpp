@@ -1,6 +1,8 @@
+#include <iostream>
 #include <TimesigList.h>
 #include "Parser.h"
 #include "StringUtil.h"
+#include "VSLuaNoteEx.h"
 
 using namespace std;
 using namespace VSQ_NS;
@@ -15,23 +17,15 @@ map<tick_t, PianorollItem *> *Parser::getEvent( const string eventText )
         if( line.size() == 0 ){
             continue;
         }
-        vector<string> parameters = StringUtil::explode( ",", line );
-        if( parameters.size() < 5 ){
-            continue;
-        }
-
-        tick_t tick = (tick_t)atol( parameters[0].c_str() );
-        int noteNumber = atoi( parameters[1].c_str() );
-        string phrase = parameters[2];
-        string symbol = parameters[3];
-        tick_t length = (tick_t)atol( parameters[4].c_str() );
+        VSLuaNoteEx note( line );
 
         PianorollItem *item = new PianorollItem();
-        item->noteNumber = noteNumber;
-        item->phrase = phrase;
-        item->symbols = symbol;
-        item->length = length;
+        item->noteNumber = note.noteNum;
+        item->phrase = note.lyric;
+        item->symbols = note.phonemes;
+        item->length = note.durTick;
 
+        tick_t tick = note.posTick;
         if( items->find( tick ) != items->end() ){
             delete items->find( tick )->second;
         }
@@ -62,5 +56,6 @@ TimesigList *Parser::getTimesig( const string timesigText )
         timesigList->push( Timesig( numerator, denominator, timesig.barCount ) );
         timesigList->updateTimesigInfo();
     }
+
     return timesigList;
 }
