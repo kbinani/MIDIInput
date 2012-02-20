@@ -49,12 +49,12 @@ VSLuaNoteEx::VSLuaNoteEx( const string line )
         chomp( key );
         chomp( value );
         if( 0 < value.length() ){
-            if( value[0] == '"' ){
+            if( value[0] == '\'' ){
                 value = value.substr( 1 );
             }
         }
         if( 0 < value.length() ){
-            if( value[value.length() - 1] == '"' ){
+            if( value[value.length() - 1] == '\'' ){
                 value = value.substr( 0, value.length() - 1 );
             }
         }
@@ -100,8 +100,8 @@ const string VSLuaNoteEx::toString()
     oss << "durTick=" << durTick << ",";
     oss << "noteNum=" << noteNum << ",";
     oss << "velocity=" << velocity << ",";
-    oss << "lyric=\"" << lyric << "\",";
-    oss << "phonemes=\"" << phonemes << "\",";
+    oss << "lyric='" << lyric << "',";
+    oss << "phonemes='" << phonemes << "',";
     oss << "bendDepth=" << bendDepth << ",";
     oss << "bendLength=" << bendLength << ",";
     oss << "risePort=" << (risePort ? "1" : "0") << ",";

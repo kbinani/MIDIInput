@@ -11,9 +11,9 @@ public:
     void testGetEvent()
     {
         ostringstream oss;
-        oss << "{posTick=480,noteNum=60,lyric=\"あ\",phonemes=\"a\",durTick=480}" << "\x0A";
+        oss << "{posTick=480,noteNum=60,lyric='あ',phonemes='a',durTick=480}" << "\x0A";
         oss << "\x0A";
-        oss << "{posTick=960,noteNum=62,lyric=\"わ\",phonemes=\"w a\",durTick=480}" <<  "\x0A";
+        oss << "{posTick=960,noteNum=62,lyric='わ',phonemes='w a',durTick=480}" <<  "\x0A";
         Parser parser;
         map<tick_t, PianorollItem *> *actual = parser.getEvent( oss.str() );
 

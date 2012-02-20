@@ -43,9 +43,9 @@ extern "C" Q_DECL_EXPORT int start( lua_State *state ){
 int main( int argc, char *argv[] ){
     QApplication app( argc, argv );
     ostringstream oss;
-    oss << "0,62,a,w a,480";
+    oss << "{posTick=0,noteNum=62,lyric='a',phonemes='w a',durTick=480}";
     oss << "\x0A";
-    oss << "480,64,ra,4 a,480";
+    oss << "{posTick=480,noteNum=64,lyric='ra',phonemes='4 a',durTick=480}";
     string eventText = oss.str();
 
     oss.str( "" );
