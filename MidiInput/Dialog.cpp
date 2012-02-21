@@ -237,7 +237,8 @@ void Dialog::onRepaintRequired()
     ui->pianoroll->repaint();
 }
 
-const string Dialog::getMetaText()
+const string Dialog::getEventText()
 {
-    return metaText;
+    Parser parser;
+    return parser.toString( items );
 }

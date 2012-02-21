@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <TimesigList.h>
 #include "Parser.h"
 #include "StringUtil.h"
@@ -58,4 +59,24 @@ TimesigList *Parser::getTimesig( const string timesigText )
     }
 
     return timesigList;
+}
+
+const string Parser::toString( map<tick_t, PianorollItem *> *items )
+{
+    ostringstream oss;
+    map<tick_t, PianorollItem *>::iterator i;
+    for( i = items->begin(); i != items->end(); i++ ){
+        tick_t tick = i->first;
+        PianorollItem *item = i->second;
+
+        VSLuaNoteEx note;
+        note.posTick = tick;
+        note.durTick = item->length;
+        note.noteNum = item->noteNumber;
+        note.lyric = item->phrase;
+        note.phonemes = item->symbols;
+
+        oss << note.toString() << "\x0A";
+    }
+    return oss.str();
 }

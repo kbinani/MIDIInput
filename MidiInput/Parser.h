@@ -25,6 +25,11 @@ public:
      *     {tick},{numerator},{denominator}
      */
     VSQ_NS::TimesigList *getTimesig( const std::string timesigText );
+
+    /**
+     * @brief イベント情報をテキストに変換する。getEvent の逆の処理を行うメソッド
+     */
+    const std::string toString( std::map<VSQ_NS::tick_t, PianorollItem *> *items );
 };
 
 #endif
