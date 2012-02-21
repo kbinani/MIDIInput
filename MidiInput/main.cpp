@@ -41,6 +41,7 @@ extern "C" Q_DECL_EXPORT int start( lua_State *state ){
 #ifdef QT_DEBUG
 int main( int argc, char *argv[] ){
     QApplication app( argc, argv );
+
     ostringstream oss;
     oss << "{posTick=0,noteNum=62,lyric='a',phonemes='w a',durTick=480}";
     oss << "\x0A";
@@ -53,9 +54,13 @@ int main( int argc, char *argv[] ){
     oss << "\x0A";
     oss << "1920,3,4";
     string timesigText = oss.str();
+
     Dialog d( eventText, timesigText, NULL );
     d.show();
-    return app.exec();
+    eventText = d.getEventText();
+    int result = app.exec();
+    qDebug( eventText.c_str() );
+    return result;
 }
 #endif
 
