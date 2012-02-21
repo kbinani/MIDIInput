@@ -13,6 +13,11 @@ public:
      */
     static void backward();
 
+    /**
+     * @brief Job Plugin 実行中に表示される"Running JobPlugin ..."ウィンドウ内の、"Cancel"ボタンを無効化する
+     */
+    static void disablePluginCancelButton();
+
 private:
     Robot(){
     }

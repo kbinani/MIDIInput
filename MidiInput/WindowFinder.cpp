@@ -146,4 +146,28 @@ BOOL CALLBACK WindowFinder::enumerationCallback( HWND hwnd, LPARAM lParam ){
     return TRUE;
 }
 
+HWND WindowFinder::getPluginProgressWindow()
+{
+    return FindWindow( NULL, TEXT( "Running Job Plugin ..." ) );
+}
+
+HWND WindowFinder::getPluginCancelButton()
+{
+    HWND dialog = getPluginProgressWindow();
+    if( !dialog ){
+        return NULL;
+    }
+    vector<HWND> components;
+    getWindows( dialog, components );
+    vector<HWND>::iterator i;
+    for( i = components.begin(); i != components.end(); i++ ){
+        HWND component = (*i);
+        string title = getTitle( component );
+        if( title == "Cancel" ){
+            return component;
+        }
+    }
+    return NULL;
+}
+
 #endif

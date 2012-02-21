@@ -43,6 +43,18 @@ public:
      */
     static HWND getBackwardToolButton( HWND editorWindow );
 
+    /**
+     * @brief プラグインの進捗を表示するウィンドウを取得する
+     * @return ウィンドウハンドル
+     */
+    static HWND getPluginProgressWindow();
+
+    /**
+     * @brief プラグインを中断するための"Cancel"ボタンのハンドルを取得する
+     * @return Cancel ボタンのウィンドウハンドル
+     */
+    static HWND getPluginCancelButton();
+
 private:
     WindowFinder(){
     }

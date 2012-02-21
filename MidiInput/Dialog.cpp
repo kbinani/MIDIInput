@@ -5,6 +5,7 @@
 #include "Dialog.h"
 #include "Pianoroll.h"
 #include "Parser.h"
+#include "Robot.h"
 #include "ui_Dialog.h"
 
 using namespace std;
@@ -48,6 +49,8 @@ Dialog::Dialog( const string eventText, const string timesigText, QWidget *paren
     ui->pianoroll->setMutex( mutex );
 
     connect( this, SIGNAL(doRepaint()), SLOT(onRepaintRequired()) );
+
+    Robot::disablePluginCancelButton();
 }
 
 Dialog::~Dialog()
