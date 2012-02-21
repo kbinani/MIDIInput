@@ -68,19 +68,30 @@ public:
      */
     static HWND getPluginCancelButton();
 
-private:
-    WindowFinder(){
-    }
+    /**
+     * @brief 再生ボタン、進むボタン等があるツールバーのウィンドウハンドルを取得する
+     * @param editorWindow エディターのウィンドウハンドル
+     * @return ウィンドウハンドル
+     */
+    static HWND getTransportToolBar( HWND editorWindow );
 
     /**
-     * 指定されたウィンドウの子ウィンドウを列挙する
+     * @brief 指定されたウィンドウの子ウィンドウを列挙する
+     * @param window ウィンドウ
+     * @param result 結果の格納先
      */
     static void getWindows( HWND window, std::vector<HWND> &result );
 
     /**
-     * ウィンドウのタイトルを取得する
+     * @brief ウィンドウのタイトルを取得する
+     * @param window ウィンドウ
+     * @return タイトル
      */
-    static std::string getTitle( HWND window );
+    static const std::string getTitle( HWND window );
+
+private:
+    WindowFinder(){
+    }
 
     static BOOL CALLBACK enumerationCallback( HWND hwnd, LPARAM lParam );
 

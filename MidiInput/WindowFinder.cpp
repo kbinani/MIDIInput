@@ -106,7 +106,7 @@ void WindowFinder::getWindows( HWND window, vector<HWND> &result ){
     EnumChildWindows( window, WindowFinder::enumerationCallback, (LPARAM)&result );
 }
 
-string WindowFinder::getTitle( HWND window ){
+const string WindowFinder::getTitle( HWND window ){
     int maxLength = 512;
     char *title = new char[maxLength]();
     int length = GetWindowTextA( window, title, maxLength );
@@ -178,6 +178,29 @@ HWND WindowFinder::getPluginCancelButton()
         string title = getTitle( component );
         if( title == "Cancel" ){
             return component;
+        }
+    }
+    return NULL;
+}
+
+HWND WindowFinder::getTransportToolBar( HWND editorWindow )
+{
+    // editor の 孫コンポーネントに"tool_gototop"というツールボタンが入っている
+    // ツールバーが該当
+    vector<HWND> level1;
+    WindowFinder::getWindows( editorWindow, level1 );
+    for( vector<HWND>::iterator i = level1.begin(); i != level1.end(); i++ ){
+        vector<HWND> level2;
+        WindowFinder::getWindows( (*i), level2 );
+        for( vector<HWND>::iterator j = level2.begin(); j != level2.end(); j++ ){
+            vector<HWND> level3;
+            WindowFinder::getWindows( (*j), level3 );
+            for( vector<HWND>::iterator k = level3.begin(); k != level3.end(); k++ ){
+                string text = WindowFinder::getTitle( (*k) );
+                if( text == "tool_gototop" ){
+                    return (*j);
+                }
+            }
         }
     }
     return NULL;

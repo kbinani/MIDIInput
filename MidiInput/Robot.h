@@ -31,6 +31,12 @@ public:
      */
     static void disablePluginCancelButton();
 
+    /**
+     * @brief ソングポジションを取得する
+     * @return ソングポジションを表す文字列(ex. "0 : 0 : 240")
+     */
+    static const std::string getSongPosition();
+
 private:
     Robot(){
     }

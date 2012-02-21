@@ -11,9 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#include <vector>
 #include "Robot.h"
 #include "WindowFinder.h"
 
+using namespace std;
 
 void Robot::forward()
 {
@@ -44,5 +46,29 @@ void Robot::disablePluginCancelButton()
 #ifdef WIN32
     HWND button = WindowFinder::getPluginCancelButton();
     EnableWindow( button, FALSE );
+#endif
+}
+
+const string Robot::getSongPosition()
+{
+#ifdef WIN32
+    HWND editor = WindowFinder::getEditorWindow();
+    HWND toolbar = WindowFinder::getTransportToolBar( editor );
+    vector<HWND> windows;
+    WindowFinder::getWindows( toolbar, windows );
+    for( vector<HWND>::iterator i = windows.begin(); i != windows.end(); i++ ){
+        HWND item = (*i);
+        string title = WindowFinder::getTitle( item );
+        string::size_type index = title.find( " : " );
+        if( index != string::npos ){
+            index = title.find( " : ", index + 1 );
+            if( index != string::npos ){
+                return title;
+            }
+        }
+    }
+    return "";
+#else
+    return "";
 #endif
 }
