@@ -36,8 +36,10 @@ public:
      * @param timesigText 拍子変更情報が記録されたテキスト
      *     0,4,4
      *     {tick},{numerator},{denominator}
+     * @param musicalPartOffset Musical Part と曲頭とのオフセット。
+     *     timesigText に記録される時刻は曲頭からの時刻なので、この値を使って表示用に時刻をシフトする
      */
-    VSQ_NS::TimesigList *getTimesig( const std::string timesigText );
+    VSQ_NS::TimesigList *getTimesig( const std::string timesigText, VSQ_NS::tick_t musicalPartOffset );
 
     /**
      * @brief イベント情報をテキストに変換する。getEvent の逆の処理を行うメソッド

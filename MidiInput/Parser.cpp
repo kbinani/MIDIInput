@@ -49,7 +49,7 @@ map<tick_t, PianorollItem *> *Parser::getEvent( const string eventText )
     return items;
 }
 
-TimesigList *Parser::getTimesig( const string timesigText )
+TimesigList *Parser::getTimesig( const string timesigText, tick_t musicalPartOffset )
 {
     TimesigList *timesigList = new TimesigList();
     vector<string> lines = StringUtil::explode( "\x0A", timesigText );
@@ -62,7 +62,7 @@ TimesigList *Parser::getTimesig( const string timesigText )
         if( parameters.size() < 3 ){
             continue;
         }
-        tick_t tick = (tick_t)atol( parameters[0].c_str() );
+        tick_t tick = (tick_t)atol( parameters[0].c_str() ) - musicalPartOffset;
         int numerator = atoi( parameters[1].c_str() );
         int denominator = atoi( parameters[2].c_str() );
 

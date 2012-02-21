@@ -72,13 +72,17 @@ private:
      */
     bool autoScroll;
 
+    VSQ_NS::tick_t musicalPartOffset;
+
 public:
     /**
      * @brief コンストラクタ
      * @param eventText ノート情報を記録した文字列
-     * @param ダイアログの親
+     * @param timesigText 拍子変更情報を記録した文字列
+     * @param musicalPartOffset Musical Part と曲頭とのオフセット
+     * @param parent ダイアログの親
      */
-    explicit Dialog( const std::string eventText, const std::string timesigText, QWidget *parent = 0 );
+    explicit Dialog( const std::string eventText, const std::string timesigText, VSQ_NS::tick_t musicalPartOffset, QWidget *parent = 0 );
 
     ~Dialog();
 

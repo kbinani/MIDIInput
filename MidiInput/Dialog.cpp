@@ -24,7 +24,7 @@
 using namespace std;
 using namespace VSQ_NS;
 
-Dialog::Dialog( const string eventText, const string timesigText, QWidget *parent ) :
+Dialog::Dialog( const string eventText, const string timesigText, tick_t musicalPartOffset, QWidget *parent ) :
     QDialog( parent ),
     ui( new Ui::Dialog )
 {
@@ -35,6 +35,7 @@ Dialog::Dialog( const string eventText, const string timesigText, QWidget *paren
     ui->toolButtonNote004->toggle();
     inputStarted = false;
     autoScroll = true;
+    this->musicalPartOffset = musicalPartOffset;
 
     ui->pushButtonInputToggle->setEnabled( false );
     ui->comboBox->clear();
@@ -54,7 +55,7 @@ Dialog::Dialog( const string eventText, const string timesigText, QWidget *paren
 
     mutex = new QMutex();
     Parser parser;
-    timesigList = parser.getTimesig( timesigText );
+    timesigList = parser.getTimesig( timesigText, this->musicalPartOffset );
     items = parser.getEvent( eventText );
     ui->pianoroll->setTimesigList( timesigList );
     ui->pianoroll->setItems( items );

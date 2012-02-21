@@ -21,27 +21,30 @@ extern "C"{
 #include <iostream>
 #include <sstream>
 #include <QApplication>
+#include <vsqglobal.h>
 #include "WindowFinder.h"
 #include "MidiInput.h"
 #include "Dialog.h"
 #include "DialogRunner.h"
 
 using namespace std;
+using namespace VSQ_NS;
 
 /**
  * @brief ダイアログを表示し、ダイアログが閉じるのを待つ
  */
 extern "C" Q_DECL_EXPORT int start( lua_State *state ){
     int argc = lua_gettop( state );
-    if( argc != 2 ){
+    if( argc != 3 ){
         return 0;
     }
 
     const char *eventText = lua_tostring( state, 1 );
     const char *timesigText = lua_tostring( state, 2 );
+    tick_t musicalPartOffset = (tick_t)lua_tointeger( state, 3 );
     string eventTextString( eventText );
     string timesigTextString( timesigText );
-    DialogRunner runner( eventTextString, timesigTextString );
+    DialogRunner runner( eventTextString, timesigTextString, musicalPartOffset );
     runner.start();
     runner.wait();
 

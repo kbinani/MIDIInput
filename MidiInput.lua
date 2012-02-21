@@ -40,12 +40,26 @@ function main( processParam, envParam )
 
     local eventText = getEventText();
     local timesigText = getTimesigText();
-    local result = start( eventText, timesigText );
+    local musicalPartOffset = getMusicalPartOffset();
+    local result = start( eventText, timesigText, musicalPartOffset );
 
     local notes = getNotes( result );
     replaceAllNotes( notes );
 
     return 0;
+end
+
+---
+-- Musical Part と曲頭のオフセットを取得する
+-- @return number 曲頭から計った、Musical Part の開始時刻(tick 単位)
+function getMusicalPartOffset()
+    local result, part;
+    result, part = VSGetMusicalPart();
+    if( result ~= 0 )then
+        return part.posTick;
+    else
+        return 0;
+    end
 end
 
 ---

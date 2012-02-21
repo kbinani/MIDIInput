@@ -16,18 +16,20 @@
 #include "Dialog.h"
 
 using namespace std;
+using namespace VSQ_NS;
 
-DialogRunner::DialogRunner( const std::string eventText, const std::string timesigText )
+DialogRunner::DialogRunner( const std::string eventText, const std::string timesigText, tick_t musicalPartOffset )
 {
     this->eventText = eventText;
     this->timesigText = timesigText;
+    this->musicalPartOffset = musicalPartOffset;
 }
 
 void DialogRunner::run()
 {
     int argc = 0;
     QApplication app( argc, NULL );
-    Dialog dialog( eventText, timesigText, NULL );
+    Dialog dialog( eventText, timesigText, musicalPartOffset, NULL );
     dialog.exec();
     eventText = dialog.getEventText();
 }

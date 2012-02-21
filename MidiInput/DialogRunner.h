@@ -15,15 +15,22 @@
 #define __DialogRunner_h__
 
 #include <QThread>
+#include <vsqglobal.h>
 
 class DialogRunner : public QThread
 {
 private:
     std::string eventText;
     std::string timesigText;
+    VSQ_NS::tick_t musicalPartOffset;
 
 public:
-    explicit DialogRunner( const std::string eventText, const std::string timesigText );
+    /**
+     * @param eventText 音符情報を格納したテキスト。VSLuaNoteEx でパースできる形式の音符が 0x0A で区切られた形式
+     * @param timesigText 拍子変更情報を格納したテキスト
+     * @param musicalPartOffset 表示する Musical Part の先頭と、曲頭とのオフセット(tick 単位)
+     */
+    explicit DialogRunner( const std::string eventText, const std::string timesigText, VSQ_NS::tick_t musicalPartOffset );
 
     void run();
 
