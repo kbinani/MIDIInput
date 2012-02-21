@@ -3,88 +3,98 @@
 
 #ifdef QT_ARCH_WINDOWS
 
+#include <windows.h>
+
 using namespace std;
 
-MidiInputReceiver *MidiInput::receiver = NULL;
+class MidiInputWin32WinMM
+{
+private:
+    static HMIDIIN deviceHandle;
+
+    static MidiInputReceiver *receiver;
+
+public:
+    static int getDeviceCount()
+    {
+        return (int)midiInGetNumDevs();
+    }
+
+    static const QString getDeviceName( int index )
+    {
+        MIDIINCAPSA caps;
+        memset( &caps, 0, sizeof( MIDIINCAPSA ) );
+        midiInGetDevCapsA( index, &caps, sizeof( MIDIINCAPSA ) );
+        return QString::fromStdString( string( caps.szPname ) );
+    }
+
+    static void start( int index )
+    {
+        if( !deviceHandle ){
+            midiInOpen( &deviceHandle, index, (DWORD_PTR)receive, NULL, CALLBACK_FUNCTION );
+        }
+        midiInStart( deviceHandle );
+    }
+
+    static void stop()
+    {
+        midiInStop( deviceHandle );
+        midiInClose( deviceHandle );
+        deviceHandle = NULL;
+    }
+
+    static void setReceiver( MidiInputReceiver *aReceiver )
+    {
+        receiver = aReceiver;
+    }
+
+private:
+    MidiInputWin32WinMM()
+    {
+    }
+
+    /**
+     * @brief MIDI 入力を受信する
+     */
+    static void CALLBACK receive( HMIDIIN hMidiIn, UINT wMsg, DWORD_PTR dwInstance, DWORD_PTR dwParam1, DWORD_PTR dwParam2 )
+    {
+        if( wMsg == MM_MIM_DATA ){
+            int receive = dwParam1;
+            int message = receive & 0xF0;
+            if( message == 0x80 || message == 0x90 ){
+                if( receiver ){
+                    receiver->send(
+                        (unsigned char)(receive & 0xff),
+                        (unsigned char)((receive & 0xffff) >> 8),
+                        (unsigned char)((receive & ((2 << 24) - 1)) >> 16)
+                    );
+                }
+            }
+        }
+    }
+};
+
+MidiInputReceiver *MidiInputWin32WinMM::receiver = NULL;
+HMIDIIN MidiInputWin32WinMM::deviceHandle = NULL;
 
 void MidiInput::setReceiver( MidiInputReceiver *aReceiver ){
-    receiver = aReceiver;
+    MidiInputWin32WinMM::setReceiver( aReceiver );
 }
 
-HMIDIIN MidiInput::deviceHandle = NULL;
-
 int MidiInput::getDeviceCount(){
-    return (int)midiInGetNumDevs();
+    return MidiInputWin32WinMM::getDeviceCount();
 }
 
 const QString MidiInput::getDeviceName( int index ){
-    MIDIINCAPSA caps;
-    memset( &caps, 0, sizeof( MIDIINCAPSA ) );
-    midiInGetDevCapsA( index, &caps, sizeof( MIDIINCAPSA ) );
-    return QString::fromStdString( string( caps.szPname ) );
+    return MidiInputWin32WinMM::getDeviceName( index );
 }
 
 void MidiInput::start( int index ){
-    if( !deviceHandle ){
-        midiInOpen( &deviceHandle, index, (DWORD_PTR)MidiInput::receive, NULL, CALLBACK_FUNCTION );
-    }
-    midiInStart( deviceHandle );
+    MidiInputWin32WinMM::start( index );
 }
 
-void MidiInput::stop( int index ){
-    midiInStop( deviceHandle );
-    midiInClose( deviceHandle );
-    deviceHandle = NULL;
-}
-
-void CALLBACK MidiInput::receive( HMIDIIN hMidiIn, UINT wMsg, DWORD_PTR dwInstance, DWORD_PTR dwParam1, DWORD_PTR dwParam2 ){
-    switch( wMsg ){
-        case MM_MIM_OPEN:{
-            return;
-        }
-        case MM_MIM_CLOSE:{
-            return;
-        }
-        case MM_MIM_DATA:{
-            int receive = dwParam1;
-            switch( receive & 0xF0 ){
-                case 0x80:
-                case 0x90:
-                case 0xa0:
-                case 0xb0:
-                case 0xe0:{
-                    if( receiver ){
-                        receiver->send(
-                            (unsigned char)(receive & 0xff),
-                            (unsigned char)((receive & 0xffff) >> 8),
-                            (unsigned char)((receive & ((2 << 24) - 1)) >> 16)
-                        );
-                    }
-                    break;
-                }
-                case 0xc0:
-                case 0xd0:{
-                    if( receiver ){
-                        receiver->send(
-                            (unsigned char)( receive & 0xff ),
-                            (unsigned char)((receive & 0xffff) >> 8)
-                        );
-                    }
-                    break;
-                }
-            }
-            return;
-        }
-        case MM_MIM_LONGDATA:{
-            return;
-        }
-        case MM_MIM_ERROR:{
-            return;
-        }
-        case MM_MIM_LONGERROR:{
-            return;
-        }
-    }
+void MidiInput::stop(){
+    MidiInputWin32WinMM::stop();
 }
 
 #endif

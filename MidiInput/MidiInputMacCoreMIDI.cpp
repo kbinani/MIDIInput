@@ -12,8 +12,6 @@
 
 using namespace std;
 
-MidiInputReceiver *MidiInput::receiver = NULL;
-
 class MidiInputMacCoreMIDI
 {
 private:
@@ -220,9 +218,8 @@ private:
 MidiInputReceiver *MidiInputMacCoreMIDI::receiver = NULL;
 MidiInputMacCoreMIDI::Endpoint MidiInputMacCoreMIDI::currentEndpoint;
 
-void MidiInput::setReceiver( MidiInputReceiver *aReceiver )
+void MidiInput::setReceiver( MidiInputReceiver *receiver )
 {
-    receiver = aReceiver;
     MidiInputMacCoreMIDI::setReceiver( receiver );
 }
 
@@ -236,7 +233,7 @@ const QString MidiInput::getDeviceName( int index )
     return MidiInputMacCoreMIDI::getDeviceName( index );
 }
 
-void MidiInput::stop( int index )
+void MidiInput::stop()
 {
     MidiInputMacCoreMIDI::stop();
 }

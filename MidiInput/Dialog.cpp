@@ -191,7 +191,7 @@ void Dialog::inputStartRequired( int channel )
 
 void Dialog::inputStopRequired()
 {
-    MidiInput::stop( this->channel );
+    MidiInput::stop();
     MidiInput::setReceiver( NULL );
 }
 
