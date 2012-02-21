@@ -55,6 +55,7 @@ Dialog::Dialog( const string eventText, const string timesigText, QWidget *paren
 
 Dialog::~Dialog()
 {
+    inputStopRequired();
     delete ui;
     delete timesigList;
     for( map<tick_t, PianorollItem *>::iterator i = items->begin(); i != items->end(); i++ ){
