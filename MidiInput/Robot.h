@@ -14,6 +14,8 @@
 #ifndef __Robot_h__
 #define __Robot_h__
 
+#include <string>
+
 class Robot{
 public:
     /**
