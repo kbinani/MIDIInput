@@ -27,15 +27,53 @@ function main( processParam, envParam )
 
     local eventText = getEventText();
     local timesigText = getTimesigText();
-    luavsq.Log.println( "eventText=" .. eventText );
-    luavsq.Log.println( "timesigText=" .. timesigText );
     local result = start( eventText, timesigText );
 
-    luavsq.Log.println( "result=" .. result );
+    local notes = getNotes( result );
+    replaceAllNotes( notes );
 
     return 0;
 end
 
+---
+-- ダイアログの戻りのテキストを、音符のリストに変換する
+-- @param string 変換元のテキスト
+-- @return table<VSLuaNoteEx> 変換後の音符リスト
+function getNotes( text )
+    local result = {};
+    local lines = luavsq.Util.split( text, string.char( 0x0A ) );
+    local i;
+    for i = 1, #lines, 1 do
+        local code = "return " .. lines[i];
+        local note = loadstring( code )();
+        table.insert( result, note );
+    end
+    return result;
+end
+
+---
+-- 選択中の Musical Part 内の音符をすべて削除し、引数で渡された音符を挿入する
+-- @param table<VSLuaNoteEx> 挿入する音符のリスト
+function replaceAllNotes( notes )
+    -- 全削除
+    VSSeekToBeginNote();
+    local result, note;
+    result, note = VSGetNextNote();
+    while( result ~= 0 )do
+        VSRemoveNote( note );
+        result, note = VSGetNextNote();
+    end
+
+    -- 挿入
+    local i;
+    for i = 1, #notes, 1 do
+        VSInsertNoteEx( notes[i] );
+    end
+end
+
+---
+-- 選択中の Musical Part 内の音符情報をテキストに変換する
+-- @return string 変換後のテキスト
 function getEventText()
     local text = "";
 
