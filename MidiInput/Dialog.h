@@ -141,6 +141,14 @@ private:
      * MIDI 入力終了が要求されたとき呼ばれる
      */
     void inputStopRequired();
+
+    /**
+     * @brief 現在のエディタウィンドウのソングポジションを取得する
+     * @param timesigList 拍子情報
+     * @param musicalPartOffset オフセット
+     * @return ソングポジション
+     */
+    VSQ_NS::tick_t getSongPosition( VSQ_NS::TimesigList *timesigList, VSQ_NS::tick_t musicalPartOffset );
 };
 
 #endif // DIALOG_H

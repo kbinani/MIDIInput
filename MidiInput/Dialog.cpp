@@ -14,6 +14,7 @@
 #include <sstream>
 #include <QKeyEvent>
 #include <QString>
+#include <QStringList>
 #include "MidiInput.h"
 #include "Dialog.h"
 #include "Pianoroll.h"
@@ -59,13 +60,15 @@ Dialog::Dialog( const string eventText, const string timesigText, tick_t musical
     items = parser.getEvent( eventText );
     ui->pianoroll->setTimesigList( timesigList );
     ui->pianoroll->setItems( items );
-    ui->pianoroll->setSongPosition( 0, false );
     ui->pianoroll->setMutex( mutex );
     ui->pianoroll->setMusicalPartOffset( this->musicalPartOffset );
 
     connect( this, SIGNAL(doRepaint()), SLOT(onRepaintRequired()) );
 
     Robot::disablePluginCancelButton();
+
+    tick_t songPosition = getSongPosition( timesigList, this->musicalPartOffset );
+    ui->pianoroll->setSongPosition( songPosition, false );
 }
 
 Dialog::~Dialog()
@@ -260,4 +263,26 @@ const string Dialog::getEventText()
 {
     Parser parser;
     return parser.toString( items );
+}
+
+tick_t Dialog::getSongPosition( TimesigList *timesigList, tick_t musicalPartOffset )
+{
+    QString songPositionString = QString::fromStdString( Robot::getSongPosition() );
+    QStringList parameters = songPositionString.split( " : " );
+    if( 3 <= parameters.size() ){
+        int preMeasure = Robot::getPreMeasure();
+        int barCount = parameters[0].toInt() + (preMeasure - 1);
+        int beat = parameters[1].toInt();
+        int tick = parameters[2].toInt();
+
+        int localTickAtBar = timesigList->getClockFromBarCount( barCount );
+        Timesig timesig = timesigList->getTimesigAt( localTickAtBar );
+        int tickPerBeat = 480 * 4 / timesig.denominator;
+        tick_t songPosition = localTickAtBar - musicalPartOffset;
+        songPosition += (beat - 1) * tickPerBeat;
+        songPosition += tick;
+        return songPosition;
+    }else{
+        return 0;
+    }
 }
