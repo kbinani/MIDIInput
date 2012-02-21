@@ -90,3 +90,6 @@ else:unix:!mac:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../cad
 else:unix:!mac:CONFIG(debug, debug|release):   PRE_TARGETDEPS += $$PWD/../../cadencii/vsq/build/linux/debug/libvsq.a
 else:unix:CONFIG(release, debug|release):      PRE_TARGETDEPS += $$PWD/../../cadencii/vsq/build/macosx/release/libvsq.a
 else:unix:CONFIG(debug, debug|release):        PRE_TARGETDEPS += $$PWD/../../cadencii/vsq/build/macosx/debug/libvsq.a
+
+OTHER_FILES += \
+    ../MidiInput.lua
