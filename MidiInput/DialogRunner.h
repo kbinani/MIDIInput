@@ -14,6 +14,12 @@ public:
 
     void run();
 
+    /**
+     * @brief 編集結果の音符情報を取得する
+     * @return 音符情報
+     */
+    const std::string getEventText();
+
 private:
     DialogRunner(){
     }

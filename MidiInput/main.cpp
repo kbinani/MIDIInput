@@ -32,10 +32,9 @@ extern "C" Q_DECL_EXPORT int start( lua_State *state ){
     runner.start();
     runner.wait();
 
-//    string result = dialog.getMetaText();
-    string result = eventTextString;
+    string result = runner.getEventText();
 
-    lua_pushstring( state, "foo" );//result.c_str() );
+    lua_pushstring( state, result.c_str() );
     return 1;
 }
 
