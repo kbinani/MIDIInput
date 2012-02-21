@@ -178,14 +178,14 @@ void PianorollContent::paintMeasureLines( QPainter *g, QRect visibleArea )
     int bottom = getYFromNoteNumber( NOTE_MIN - 1, trackHeight );
     int left = visibleArea.x();
     int right = left + visibleArea.width();
-    tick_t tickAtScreenRight = (tick_t)getTickFromX( right );
+    tick_t tickAtScreenRight = (tick_t)getTickFromX( right ) + musicalPartOffset;
     measureLineIterator->reset( tickAtScreenRight );
 
     QColor barColor( 161, 157, 136 );
     QColor beatColor( 209, 204, 172 );
     while( measureLineIterator->hasNext() ){
         MeasureLine line = measureLineIterator->next();
-        int x = getXFromTick( line.tick );
+        int x = getXFromTick( line.tick - musicalPartOffset );
         if( x < left ){
             continue;
         }else if( right < x ){
@@ -282,4 +282,9 @@ tick_t PianorollContent::getSongPosition()
 void PianorollContent::setMutex( QMutex *mutex )
 {
     this->mutex = mutex;
+}
+
+void PianorollContent::setMusicalPartOffset( tick_t musicalPartOffset )
+{
+    this->musicalPartOffset = musicalPartOffset;
 }

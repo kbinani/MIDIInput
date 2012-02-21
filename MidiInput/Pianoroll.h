@@ -90,6 +90,12 @@ public:
      */
     void ensureNoteVisible( VSQ_NS::tick_t tick, VSQ_NS::tick_t length, int noteNumber );
 
+    /**
+     * @brief 曲頭から Musical Part 開始位置のオフセット
+     * @param musicalPartOffset オフセット
+     */
+    void setMusicalPartOffset( VSQ_NS::tick_t musicalPartOffset );
+
 private:
     /**
      * @brief スクロール領域が縦方向にスクロールしたことを PianorollContentScroller -> Pianoroll に通知する

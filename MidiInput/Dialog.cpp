@@ -55,12 +55,13 @@ Dialog::Dialog( const string eventText, const string timesigText, tick_t musical
 
     mutex = new QMutex();
     Parser parser;
-    timesigList = parser.getTimesig( timesigText, this->musicalPartOffset );
+    timesigList = parser.getTimesig( timesigText );
     items = parser.getEvent( eventText );
     ui->pianoroll->setTimesigList( timesigList );
     ui->pianoroll->setItems( items );
     ui->pianoroll->setSongPosition( 0, false );
     ui->pianoroll->setMutex( mutex );
+    ui->pianoroll->setMusicalPartOffset( this->musicalPartOffset );
 
     connect( this, SIGNAL(doRepaint()), SLOT(onRepaintRequired()) );
 

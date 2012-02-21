@@ -80,6 +80,11 @@ private:
      */
     QMutex *mutex;
 
+    /**
+     * @brief 曲頭から Musical Part までのオフセット
+     */
+    VSQ_NS::tick_t musicalPartOffset;
+
 public:
     /**
      * @brief ノート番号から、音名を表す番号を取得する。Cであれば0, C#であれば1など
@@ -180,6 +185,12 @@ public:
      * @return x 座標
      */
     int getXFromTick( cadencii::vsq::tick_t tick );
+
+    /**
+     * @brief 曲頭から Musical Part までのオフセットを設定する
+     * @param musicalPartOffset オフセット
+     */
+    void setMusicalPartOffset( VSQ_NS::tick_t musicalPartOffset );
 
 private:
     /**

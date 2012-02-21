@@ -145,3 +145,8 @@ void Pianoroll::ensureNoteVisible( tick_t tick, tick_t length, int noteNumber )
         }
     }
 }
+
+void Pianoroll::setMusicalPartOffset( tick_t musicalPartOffset )
+{
+    ui->content->setMusicalPartOffset( musicalPartOffset );
+}
