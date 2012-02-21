@@ -29,14 +29,14 @@ function main( processParam, envParam )
 
     if( false == pcall( dofile, luavsqPath ) )then
         VSMessageBox( "luavsq ライブラリの読み込みに失敗しました", 0 );
-        return 0;
+        return 1;
     end
 
-    luavsq.Log.setLevel( 1 );
-    luavsq.Log.println( "dllPath=" .. dllPath );
-    luavsq.Log.println( "luavsqPath=" .. luavsqPath );
-
     local start = package.loadlib( dllPath, "start" );
+    if( nil == start )then
+        VSMessageBox( "MidiInput.dll の読み込みに失敗しました", 0 );
+        return 1;
+    end
 
     local eventText = getEventText();
     local timesigText = getTimesigText();
@@ -116,6 +116,9 @@ function getEventText()
     return text;
 end
 
+---
+-- 拍子変更情報をテキストに変換する
+-- @return string 変換後のテキスト
 function getTimesigText()
     local result = "";
     local timesigInfo = {};
@@ -127,22 +130,4 @@ function getTimesigText()
         succeeded, timesigInfo = VSGetNextTimeSig();
     end
     return result;
-end
-
----
--- 指定した tick 時刻にあるノート情報を取得する
--- @param number position tick 単位の時刻
--- @return VSLuaNote
-function selectAt( position )
-    VSSeekToBeginNote();
-    while( true )do
-        local note = VSGetNextNote();
-        if( note == 0 )then
-            break;
-        end
-        if( note.posTick == position )then
-            return note;
-        end
-    end
-    return nil;
 end
