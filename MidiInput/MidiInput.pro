@@ -59,7 +59,8 @@ win32:LIBS += \
     -L"C:\lua5_1_4_Sources\lua5.1\lib\static" \
     -lwinmm \
     -luser32 \
-    -llua5.1
+    -llua5.1 \
+    -ladvapi32
 
 unix:LIBS += -llua
 

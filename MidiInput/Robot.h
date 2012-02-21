@@ -37,6 +37,12 @@ public:
      */
     static const std::string getSongPosition();
 
+    /**
+     * @brief 現在設定されているプリメジャーを取得する
+     * @return プリメジャー値
+     */
+    static int getPreMeasure();
+
 private:
     Robot(){
     }

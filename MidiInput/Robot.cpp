@@ -72,3 +72,32 @@ const string Robot::getSongPosition()
     return "";
 #endif
 }
+
+int Robot::getPreMeasure()
+{
+#ifdef WIN32
+    // HKEY_CURRENT_USER\Software\VOCALOID3\VOCALOID Editor\System\PreMeasure
+    HKEY key;
+    RegOpenKeyEx(
+        HKEY_CURRENT_USER,
+        TEXT( "Software\\VOCALOID3\\VOCALOID Editor\\System" ),
+        0,
+        KEY_READ,
+        &key );
+    DWORD valueType;
+    const int LENGTH = 10;
+    char value[LENGTH];
+    DWORD valueSize = LENGTH;
+    RegQueryValueEx( key, TEXT( "PreMeasure" ), NULL, &valueType, (LPBYTE)value, &valueSize );
+    int result = 4;
+    if( valueType == REG_SZ ){
+        if( 1 != ::sscanf_s( value, "%d", &result ) ){
+            result = 4;
+        }
+    }
+    RegCloseKey( key );
+    return result;
+#else
+    return 4;
+#endif
+}
