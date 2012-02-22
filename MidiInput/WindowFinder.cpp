@@ -25,7 +25,19 @@ void WindowFinder::getScrollInfo( HWND scroll, LPSCROLLINFO info ){
 }
 
 HWND WindowFinder::getEditorWindow(){
-    return ::FindWindowA( NULL, "VOCALOID3 Editor - TRACK EDITOR" );
+    vector<HWND> windows;
+    getWindows( GetDesktopWindow(), windows );
+    vector<HWND>::iterator i;
+    const int BUFFER_LENGTH = 256;
+    char className[BUFFER_LENGTH];
+    for( i = windows.begin(); i != windows.end(); i++ ){
+        GetClassNameA( (*i), className, BUFFER_LENGTH );
+        string name = className;
+        if( name == "Afx:00400000:0" ){
+            return (*i);
+        }
+    }
+    return NULL;
 }
 
 HWND WindowFinder::getMusicalEditor( HWND editorWindow ){
