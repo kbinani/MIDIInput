@@ -25,7 +25,8 @@ SOURCES += \
     MidiInputMacCoreMIDI.cpp \
     DialogRunner.cpp \
     Parser.cpp \
-    VSLuaNoteEx.cpp
+    VSLuaNoteEx.cpp \
+    Log.cpp
 
 HEADERS += \
     Dialog.h \
@@ -41,7 +42,8 @@ HEADERS += \
     DialogRunner.h \
     Parser.h \
     StringUtil.h \
-    VSLuaNoteEx.h
+    VSLuaNoteEx.h \
+    Log.h
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib
@@ -93,4 +95,5 @@ else:unix:CONFIG(release, debug|release):      PRE_TARGETDEPS += $$PWD/../../cad
 else:unix:CONFIG(debug, debug|release):        PRE_TARGETDEPS += $$PWD/../../cadencii/vsq/build/macosx/debug/libvsq.a
 
 OTHER_FILES += \
-    ../MidiInput.lua
+    ../MidiInput.lua \
+    ../README.markdown

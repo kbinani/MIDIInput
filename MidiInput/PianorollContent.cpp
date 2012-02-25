@@ -35,6 +35,7 @@ PianorollContent::PianorollContent(QWidget *parent) :
     this->setMouseTracking( true );
 
     this->setMinimumWidth( 5000 );
+    this->setMinimumHeight( this->getMinimumHeight() );
 }
 
 PianorollContent::~PianorollContent()

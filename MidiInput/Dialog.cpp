@@ -15,6 +15,7 @@
 #include <QKeyEvent>
 #include <QString>
 #include <QStringList>
+#include <QTimer>
 #include "MidiInput.h"
 #include "Dialog.h"
 #include "Pianoroll.h"
@@ -62,13 +63,22 @@ Dialog::Dialog( const string eventText, const string timesigText, tick_t musical
     ui->pianoroll->setItems( items );
     ui->pianoroll->setMutex( mutex );
     ui->pianoroll->setMusicalPartOffset( this->musicalPartOffset );
+    ui->pianoroll->adjustSize();
 
     connect( this, SIGNAL(doRepaint()), SLOT(onRepaintRequired()) );
 
     Robot::disablePluginCancelButton();
 
+    QTimer::singleShot( 0, this, SLOT(initSongPosition()) );
+}
+
+void Dialog::initSongPosition()
+{
     tick_t songPosition = getSongPosition( timesigList, this->musicalPartOffset );
+    int noteNumber = findNearestNoteNumber( items, songPosition );
+    ui->pianoroll->ensureNoteVisible( songPosition, 480, noteNumber );
     ui->pianoroll->setSongPosition( songPosition, false );
+    emit doRepaint();
 }
 
 Dialog::~Dialog()
@@ -285,4 +295,17 @@ tick_t Dialog::getSongPosition( TimesigList *timesigList, tick_t musicalPartOffs
     }else{
         return 0;
     }
+}
+
+int Dialog::findNearestNoteNumber( map<tick_t, PianorollItem *> *items, tick_t songPosition )
+{
+    map<tick_t, PianorollItem *>::iterator i;
+    for( i = items->begin(); i != items->end(); i++ ){
+        tick_t pos = i->first;
+        PianorollItem *item = i->second;
+        if( pos <= songPosition && songPosition < pos + item->length ){
+            return item->noteNumber;
+        }
+    }
+    return 60;
 }

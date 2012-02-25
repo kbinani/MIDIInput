@@ -130,6 +130,11 @@ private slots:
      */
     void onRepaintRequired();
 
+    /**
+     * @brief ソングポジションの位置を初期化する
+     */
+    void initSongPosition();
+
 private:
     /**
      * MIDI 入力開始が要求されたとき呼ばれる
@@ -149,6 +154,14 @@ private:
      * @return ソングポジション
      */
     VSQ_NS::tick_t getSongPosition( VSQ_NS::TimesigList *timesigList, VSQ_NS::tick_t musicalPartOffset );
+
+    /**
+     * @brief ソングポジションに一番近い音符のノート番号を取得する
+     * @param items 音符のリスト
+     * @param songPosition ソングポジション
+     * @return ノート番号
+     */
+    int findNearestNoteNumber( std::map<VSQ_NS::tick_t, PianorollItem *> *items, VSQ_NS::tick_t songPosition );
 };
 
 #endif // DIALOG_H
