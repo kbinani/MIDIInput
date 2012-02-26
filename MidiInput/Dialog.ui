@@ -79,6 +79,9 @@
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
       </property>
+      <property name="toolTip">
+       <string>shortcut: Q</string>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -110,6 +113,9 @@
       </property>
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="toolTip">
+       <string>shortcut: D</string>
       </property>
       <property name="text">
        <string/>
@@ -168,6 +174,9 @@
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
       </property>
+      <property name="toolTip">
+       <string>shortcut: A</string>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -200,6 +209,9 @@
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
       </property>
+      <property name="toolTip">
+       <string>shortcut: F</string>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -231,6 +243,9 @@
       </property>
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="toolTip">
+       <string>shortcut: G</string>
       </property>
       <property name="text">
        <string/>
@@ -277,6 +292,9 @@
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
       </property>
+      <property name="toolTip">
+       <string>shortcut: S</string>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -308,6 +326,9 @@
       </property>
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="toolTip">
+       <string>shortcut: W</string>
       </property>
       <property name="text">
        <string/>
@@ -343,6 +364,9 @@
       </property>
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="toolTip">
+       <string>shortcut: T</string>
       </property>
       <property name="text">
        <string/>
@@ -401,6 +425,9 @@
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
       </property>
+      <property name="toolTip">
+       <string>shortcut: E</string>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -435,6 +462,9 @@
       </property>
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="toolTip">
+       <string>shortcut: R</string>
       </property>
       <property name="text">
        <string/>

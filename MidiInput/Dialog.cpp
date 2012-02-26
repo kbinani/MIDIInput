@@ -334,6 +334,9 @@ void Dialog::initToolButtonShortcut()
         QToolButton *button = findChild<QToolButton *>( name );
         if( button ){
             toolButtonShortcut.insert( make_pair( key, button ) );
+            ostringstream oss;
+            oss << "shortcut: " << (char)key;
+            button->setToolTip( oss.str().c_str() );
         }
     }
 }
