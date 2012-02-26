@@ -17,9 +17,11 @@ SOURCES += main.cpp \
     ../MidiInput/Parser.cpp \
     ../MidiInput/PianorollItem.cpp \
     ../MidiInput/VSLuaNoteEx.cpp \
+    ../MidiInput/Settings.cpp \
     ParserTest.cpp \
     VSLuaNoteExTest.cpp \
-    StringUtilTest.cpp
+    StringUtilTest.cpp \
+    SettingsTest.cpp
 
 HEADERS += \
     Util.h

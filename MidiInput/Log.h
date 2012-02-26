@@ -29,7 +29,7 @@ private:
     std::ofstream buffer;
 
 public:
-    Log::Log() :
+    Log() :
         buffer( "midiinput.log" )
     {
     }

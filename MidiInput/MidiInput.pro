@@ -26,7 +26,8 @@ SOURCES += \
     DialogRunner.cpp \
     Parser.cpp \
     VSLuaNoteEx.cpp \
-    Log.cpp
+    Log.cpp \
+    Settings.cpp
 
 HEADERS += \
     Dialog.h \
@@ -43,7 +44,8 @@ HEADERS += \
     Parser.h \
     StringUtil.h \
     VSLuaNoteEx.h \
-    Log.h
+    Log.h \
+    Settings.h
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib

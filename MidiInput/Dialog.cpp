@@ -21,6 +21,7 @@
 #include "Pianoroll.h"
 #include "Parser.h"
 #include "Robot.h"
+#include "Settings.h"
 #include "ui_Dialog.h"
 
 using namespace std;
@@ -64,6 +65,8 @@ Dialog::Dialog( const string eventText, const string timesigText, tick_t musical
     ui->pianoroll->setMutex( mutex );
     ui->pianoroll->setMusicalPartOffset( this->musicalPartOffset );
     ui->pianoroll->adjustSize();
+
+    initToolButtonShortcut();
 
     connect( this, SIGNAL(doRepaint()), SLOT(onRepaintRequired()) );
 
@@ -116,16 +119,12 @@ void Dialog::on_pushButtonInputToggle_clicked()
 void Dialog::keyPressEvent( QKeyEvent *e )
 {
     int key = e->key();
-    int delta = (key == Qt::Key_Left ? -1 : (key == Qt::Key_Right ? 1 : 0));
-    if( delta ){
-        tick_t songPosition = ui->pianoroll->getSongPosition();
-        tick_t newSongPosition = songPosition + delta * stepUnit;
-        if( newSongPosition < 0 ){
-            newSongPosition = 0;
-        }
-        if( newSongPosition != songPosition ){
-            ui->pianoroll->setSongPosition( newSongPosition, autoScroll );
-            ui->pianoroll->repaint();
+    if( key == Qt::Key_Left || key == Qt::Key_Right ){
+        moveSongPosition( key == Qt::Key_Right );
+    }else{
+        map<Qt::Key, QToolButton *>::iterator i = toolButtonShortcut.find( (Qt::Key)key );
+        if( i != toolButtonShortcut.end() ){
+            i->second->toggle();
         }
     }
 }
@@ -308,4 +307,33 @@ int Dialog::findNearestNoteNumber( map<tick_t, PianorollItem *> *items, tick_t s
         }
     }
     return 60;
+}
+
+void Dialog::moveSongPosition( bool isForward )
+{
+    int delta = isForward ? 1 : -1;
+    tick_t songPosition = ui->pianoroll->getSongPosition();
+    tick_t newSongPosition = songPosition + delta * stepUnit;
+    if( newSongPosition < 0 ){
+        newSongPosition = 0;
+    }
+    if( newSongPosition != songPosition ){
+        ui->pianoroll->setSongPosition( newSongPosition, autoScroll );
+        ui->pianoroll->repaint();
+    }
+}
+
+void Dialog::initToolButtonShortcut()
+{
+    map<Qt::Key, string> *shortcutSetting = Settings::getToolButtonShortcut();
+    toolButtonShortcut.clear();
+    map<Qt::Key, string>::iterator i;
+    for( i = shortcutSetting->begin(); i != shortcutSetting->end(); i++ ){
+        Qt::Key key = i->first;
+        QString name = QString::fromStdString( i->second );
+        QToolButton *button = findChild<QToolButton *>( name );
+        if( button ){
+            toolButtonShortcut.insert( make_pair( key, button ) );
+        }
+    }
 }

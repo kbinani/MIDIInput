@@ -17,6 +17,7 @@
 #include <map>
 #include <QDialog>
 #include <QMutex>
+#include <QToolButton>
 #include <TimesigList.h>
 #include "MidiInputReceiver.h"
 #include "PianorollItem.h"
@@ -73,6 +74,11 @@ private:
     bool autoScroll;
 
     VSQ_NS::tick_t musicalPartOffset;
+
+    /**
+     * @brief ツールボタンのショートカットキーと、対応するコンポーネントとの紐付けを格納
+     */
+    std::map<Qt::Key, QToolButton *> toolButtonShortcut;
 
 public:
     /**
@@ -162,6 +168,18 @@ private:
      * @return ノート番号
      */
     int findNearestNoteNumber( std::map<VSQ_NS::tick_t, PianorollItem *> *items, VSQ_NS::tick_t songPosition );
+
+    /**
+     * @brief ソングポジションを現在のクオンタイズに基づいて移動する
+     * @param isForward 曲末方向へ移動する場合は true を、曲頭方向へ移動する場合は false を設定する
+     */
+    void moveSongPosition( bool isForward );
+
+    /**
+     * @brief ツールボタンのショートカットキーと、対応するコンポーネントの紐付けを初期化。
+     * toolButtonShortcut フィールドの値を初期化する
+     */
+    void initToolButtonShortcut();
 };
 
 #endif // DIALOG_H
