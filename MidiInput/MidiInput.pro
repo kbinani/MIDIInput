@@ -79,22 +79,22 @@ mac:LIBS += -framework CoreFoundation -framework CoreMidi
 RESOURCES += \
     MidiInput.qrc
 
-win32:CONFIG(release, debug|release):          LIBS += -L$$PWD/../../cadencii/vsq/build/win32/release/ -lvsq
-else:win32:CONFIG(debug, debug|release):       LIBS += -L$$PWD/../../cadencii/vsq/build/win32/debug/ -lvsq
-else:unix:!mac:CONFIG(release, debug|release): LIBS += -L$$PWD/../../cadencii/vsq/build/linux/release/ -lvsq
-else:unix:!mac:CONFIG(debug, debug|release):   LIBS += -L$$PWD/../../cadencii/vsq/build/linux/debug/ -lvsq
-else:unix:CONFIG(release, debug|release):      LIBS += -L$$PWD/../../cadencii/vsq/build/macosx/release/ -lvsq
-else:unix:CONFIG(debug, debug|release):        LIBS += -L$$PWD/../../cadencii/vsq/build/macosx/debug/ -lvsq
+win32:CONFIG(release, debug|release):          LIBS += -L$$PWD/../../libvsq/build/win32/release/ -lvsq
+else:win32:CONFIG(debug, debug|release):       LIBS += -L$$PWD/../../libvsq/build/win32/debug/ -lvsq
+else:unix:!mac:CONFIG(release, debug|release): LIBS += -L$$PWD/../../libvsq/build/linux/release/ -lvsq
+else:unix:!mac:CONFIG(debug, debug|release):   LIBS += -L$$PWD/../../libvsq/build/linux/debug/ -lvsq
+else:unix:CONFIG(release, debug|release):      LIBS += -L$$PWD/../../libvsq/build/macosx/release/ -lvsq
+else:unix:CONFIG(debug, debug|release):        LIBS += -L$$PWD/../../libvsq/build/macosx/debug/ -lvsq
 
-INCLUDEPATH += $$PWD/../../cadencii/vsq
-DEPENDPATH += $$PWD/../../cadencii/vsq
+INCLUDEPATH += $$PWD/../../libvsq
+DEPENDPATH += $$PWD/../../libvsq
 
-win32:CONFIG(release, debug|release):          PRE_TARGETDEPS += $$PWD/../../cadencii/vsq/build/win32/release/vsq.lib
-else:win32:CONFIG(debug, debug|release):       PRE_TARGETDEPS += $$PWD/../../cadencii/vsq/build/win32/debug/vsq.lib
-else:unix:!mac:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../cadencii/vsq/build/linux/release/libvsq.a
-else:unix:!mac:CONFIG(debug, debug|release):   PRE_TARGETDEPS += $$PWD/../../cadencii/vsq/build/linux/debug/libvsq.a
-else:unix:CONFIG(release, debug|release):      PRE_TARGETDEPS += $$PWD/../../cadencii/vsq/build/macosx/release/libvsq.a
-else:unix:CONFIG(debug, debug|release):        PRE_TARGETDEPS += $$PWD/../../cadencii/vsq/build/macosx/debug/libvsq.a
+win32:CONFIG(release, debug|release):          PRE_TARGETDEPS += $$PWD/../../libvsq/build/win32/release/vsq.lib
+else:win32:CONFIG(debug, debug|release):       PRE_TARGETDEPS += $$PWD/../../libvsq/build/win32/debug/vsq.lib
+else:unix:!mac:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../../libvsq/build/linux/release/libvsq.a
+else:unix:!mac:CONFIG(debug, debug|release):   PRE_TARGETDEPS += $$PWD/../../libvsq/build/linux/debug/libvsq.a
+else:unix:CONFIG(release, debug|release):      PRE_TARGETDEPS += $$PWD/../../libvsq/build/macosx/release/libvsq.a
+else:unix:CONFIG(debug, debug|release):        PRE_TARGETDEPS += $$PWD/../../libvsq/build/macosx/debug/libvsq.a
 
 OTHER_FILES += \
     ../MidiInput.lua \

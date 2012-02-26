@@ -24,8 +24,8 @@
 
 building vsq.lib using Visual C++ command prompt.
 
-    git clone git://github.com/cadencii/cadencii.git
-    cd cadencii\vsq
+    git clone git://github.com/kbinani/libvsq.git
+    cd libvsq
     mkdir build
     mkdir build\win32
     qmake vsq.pro -o build\win32
