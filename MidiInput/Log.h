@@ -34,14 +34,6 @@ public:
     {
     }
 
-    static Log &stream()
-    {
-        if( logger == NULL ){
-            logger = new Log();
-        }
-        return *logger;
-    }
-
     inline Log &operator << ( const char* t )
     {
         buffer << t;
@@ -54,6 +46,14 @@ public:
         buffer << i;
         buffer.flush();
         return *this;
+    }
+
+    static Log &stream()
+    {
+        if( logger == NULL ){
+            logger = new Log();
+        }
+        return *logger;
     }
 };
 

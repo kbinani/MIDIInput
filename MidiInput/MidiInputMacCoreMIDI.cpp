@@ -231,11 +231,6 @@ private:
 MidiInputReceiver *MidiInputMacCoreMIDI::receiver = NULL;
 MidiInputMacCoreMIDI::Endpoint MidiInputMacCoreMIDI::currentEndpoint;
 
-void MidiInput::setReceiver( MidiInputReceiver *receiver )
-{
-    MidiInputMacCoreMIDI::setReceiver( receiver );
-}
-
 int MidiInput::getDeviceCount()
 {
     return MidiInputMacCoreMIDI::getDeviceCount();
@@ -246,14 +241,19 @@ const QString MidiInput::getDeviceName( int index )
     return MidiInputMacCoreMIDI::getDeviceName( index );
 }
 
-void MidiInput::stop()
+void MidiInput::setReceiver( MidiInputReceiver *receiver )
 {
-    MidiInputMacCoreMIDI::stop();
+    MidiInputMacCoreMIDI::setReceiver( receiver );
 }
 
 void MidiInput::start( int index )
 {
     MidiInputMacCoreMIDI::start( index );
+}
+
+void MidiInput::stop()
+{
+    MidiInputMacCoreMIDI::stop();
 }
 
 #endif

@@ -32,78 +32,6 @@ Pianoroll::Pianoroll( QWidget *parent ) :
     ui->keyboard->notifyVerticalScroll( 0 );
 }
 
-void Pianoroll::notifyVerticalScroll()
-{
-    QRect rect = ui->content->getVisibleArea();
-    ui->keyboard->notifyVerticalScroll( rect.y() );
-}
-
-void Pianoroll::setTrackHeight( int trackHeight )
-{
-    ui->content->setTrackHeight( trackHeight );
-    ui->keyboard->setTrackHeight( trackHeight );
-}
-
-void Pianoroll::setSongPosition( tick_t songPosition, bool autoScroll )
-{
-    tick_t lastSongPosition = ui->content->getSongPosition();
-    ui->content->setSongPosition( songPosition );
-    if( autoScroll ){
-        int x = ui->content->getXFromTick( songPosition );
-        QRect visibleArea = ui->content->getVisibleArea();
-        QScrollBar *scrollBar = ui->scrollArea->horizontalScrollBar();
-        int dx = 0;
-        if( lastSongPosition < songPosition ){
-            // 右へ移動した場合
-            if( visibleArea.right() < x ){
-                dx = ui->scrollArea->width() - (x - visibleArea.right());
-            }
-        }else{
-            // 左へ移動した場合
-            if( x < visibleArea.left() ){
-                dx = -ui->scrollArea->width() + (visibleArea.left() - x);
-            }
-        }
-        if( dx ){
-            int value = scrollBar->value() + dx;
-            if( value < scrollBar->minimum() ){
-                scrollBar->setValue( scrollBar->minimum() );
-            }else if( scrollBar->maximum() < value ){
-                scrollBar->setValue( scrollBar->maximum() );
-            }else{
-                scrollBar->setValue( scrollBar->value() + dx );
-            }
-        }
-    }
-}
-
-tick_t Pianoroll::getSongPosition()
-{
-    return ui->content->getSongPosition();
-}
-
-void Pianoroll::setTimesigList( TimesigList *timesigList )
-{
-    ui->content->setTimesigList( timesigList );
-}
-
-void Pianoroll::setItems( map<tick_t, PianorollItem *> *items )
-{
-    ui->content->setItems( items );
-}
-
-void Pianoroll::repaint()
-{
-    ui->content->repaint();
-    ui->keyboard->repaint();
-    QWidget::repaint();
-}
-
-void Pianoroll::setMutex( QMutex *mutex )
-{
-    ui->content->setMutex( mutex );
-}
-
 void Pianoroll::ensureNoteVisible( tick_t tick, tick_t length, int noteNumber )
 {
     int left = ui->content->getXFromTick( tick );
@@ -146,7 +74,79 @@ void Pianoroll::ensureNoteVisible( tick_t tick, tick_t length, int noteNumber )
     }
 }
 
+tick_t Pianoroll::getSongPosition()
+{
+    return ui->content->getSongPosition();
+}
+
+void Pianoroll::notifyVerticalScroll()
+{
+    QRect rect = ui->content->getVisibleArea();
+    ui->keyboard->notifyVerticalScroll( rect.y() );
+}
+
+void Pianoroll::repaint()
+{
+    ui->content->repaint();
+    ui->keyboard->repaint();
+    QWidget::repaint();
+}
+
+void Pianoroll::setItems( map<tick_t, PianorollItem *> *items )
+{
+    ui->content->setItems( items );
+}
+
 void Pianoroll::setMusicalPartOffset( tick_t musicalPartOffset )
 {
     ui->content->setMusicalPartOffset( musicalPartOffset );
+}
+
+void Pianoroll::setMutex( QMutex *mutex )
+{
+    ui->content->setMutex( mutex );
+}
+
+void Pianoroll::setSongPosition( tick_t songPosition, bool autoScroll )
+{
+    tick_t lastSongPosition = ui->content->getSongPosition();
+    ui->content->setSongPosition( songPosition );
+    if( autoScroll ){
+        int x = ui->content->getXFromTick( songPosition );
+        QRect visibleArea = ui->content->getVisibleArea();
+        QScrollBar *scrollBar = ui->scrollArea->horizontalScrollBar();
+        int dx = 0;
+        if( lastSongPosition < songPosition ){
+            // 右へ移動した場合
+            if( visibleArea.right() < x ){
+                dx = ui->scrollArea->width() - (x - visibleArea.right());
+            }
+        }else{
+            // 左へ移動した場合
+            if( x < visibleArea.left() ){
+                dx = -ui->scrollArea->width() + (visibleArea.left() - x);
+            }
+        }
+        if( dx ){
+            int value = scrollBar->value() + dx;
+            if( value < scrollBar->minimum() ){
+                scrollBar->setValue( scrollBar->minimum() );
+            }else if( scrollBar->maximum() < value ){
+                scrollBar->setValue( scrollBar->maximum() );
+            }else{
+                scrollBar->setValue( scrollBar->value() + dx );
+            }
+        }
+    }
+}
+
+void Pianoroll::setTimesigList( TimesigList *timesigList )
+{
+    ui->content->setTimesigList( timesigList );
+}
+
+void Pianoroll::setTrackHeight( int trackHeight )
+{
+    ui->content->setTrackHeight( trackHeight );
+    ui->keyboard->setTrackHeight( trackHeight );
 }

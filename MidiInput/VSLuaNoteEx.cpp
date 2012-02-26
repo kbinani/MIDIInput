@@ -106,6 +106,19 @@ VSLuaNoteEx::VSLuaNoteEx( const string line )
     }
 }
 
+void VSLuaNoteEx::chomp( string &text )
+{
+    while( 0 < text.length() ){
+        if( text[0] == ' ' ){
+            text = text.substr( 1 );
+        }else if( text[text.length() - 1] == ' ' ){
+            text = text.substr( 0, text.length() - 1 );
+        }else{
+            break;
+        }
+    }
+}
+
 const string VSLuaNoteEx::toString()
 {
     ostringstream oss;
@@ -125,17 +138,4 @@ const string VSLuaNoteEx::toString()
     oss << "vibratoLength=" << vibratoLength << ",";
     oss << "vibratoType=" << vibratoType << "}";
     return oss.str();
-}
-
-void VSLuaNoteEx::chomp( string &text )
-{
-    while( 0 < text.length() ){
-        if( text[0] == ' ' ){
-            text = text.substr( 1 );
-        }else if( text[text.length() - 1] == ' ' ){
-            text = text.substr( 0, text.length() - 1 );
-        }else{
-            break;
-        }
-    }
 }

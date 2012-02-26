@@ -25,6 +25,11 @@ DialogRunner::DialogRunner( const std::string eventText, const std::string times
     this->musicalPartOffset = musicalPartOffset;
 }
 
+const string DialogRunner::getEventText()
+{
+    return eventText;
+}
+
 void DialogRunner::run()
 {
     int argc = 0;
@@ -32,9 +37,4 @@ void DialogRunner::run()
     Dialog dialog( eventText, timesigText, musicalPartOffset, NULL );
     dialog.exec();
     eventText = dialog.getEventText();
-}
-
-const string DialogRunner::getEventText()
-{
-    return eventText;
 }

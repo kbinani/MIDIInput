@@ -20,15 +20,15 @@ PianorollContentScroller::PianorollContentScroller( QWidget *parent ) :
 {
 }
 
-void PianorollContentScroller::setPianoroll( Pianoroll *pianoroll )
-{
-    this->pianoroll = pianoroll;
-}
-
 void PianorollContentScroller::scrollContentsBy( int dx, int dy )
 {
     QScrollArea::scrollContentsBy( dx, dy );
     if( dy ){
         this->pianoroll->notifyVerticalScroll();
     }
+}
+
+void PianorollContentScroller::setPianoroll( Pianoroll *pianoroll )
+{
+    this->pianoroll = pianoroll;
 }

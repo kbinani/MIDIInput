@@ -31,27 +31,10 @@ class Dialog : public QDialog, public MidiInputReceiver
     Q_OBJECT
 
 private:
-    Ui::Dialog *ui;
-
     /**
-     * @brief テンポ変更
+     * @brief ソングポジションの移動に伴って自動スクロールするかどうか
      */
-    VSQ_NS::TimesigList *timesigList;
-
-    /**
-     * @brief 描画対象のリスト
-     */
-    std::map<VSQ_NS::tick_t, PianorollItem *> *items;
-
-    /**
-     * 左右キーを押した際に、ソングポジションが移動する量
-     */
-    VSQ_NS::tick_t stepUnit;
-
-    /**
-     * @brief MIDI 入力が開始されたかどうか
-     */
-    bool inputStarted;
+    bool autoScroll;
 
     /**
      * @brief MIDI 入力しているチャンネル番号
@@ -59,9 +42,21 @@ private:
     int channel;
 
     /**
+     * @brief MIDI 入力が開始されたかどうか
+     */
+    bool inputStarted;
+
+    /**
      * @brief 休符を入力している状態であれば true
      */
     bool isRest;
+
+    /**
+     * @brief 描画対象のリスト
+     */
+    std::map<VSQ_NS::tick_t, PianorollItem *> *items;
+
+    VSQ_NS::tick_t musicalPartOffset;
 
     /**
      * @brief items フィールドに更新をかけるときに使用するミューテックス
@@ -69,16 +64,21 @@ private:
     QMutex *mutex;
 
     /**
-     * @brief ソングポジションの移動に伴って自動スクロールするかどうか
+     * 左右キーを押した際に、ソングポジションが移動する量
      */
-    bool autoScroll;
+    VSQ_NS::tick_t stepUnit;
 
-    VSQ_NS::tick_t musicalPartOffset;
+    /**
+     * @brief テンポ変更
+     */
+    VSQ_NS::TimesigList *timesigList;
 
     /**
      * @brief ツールボタンのショートカットキーと、対応するコンポーネントとの紐付けを格納
      */
     std::map<Qt::Key, QToolButton *> toolButtonShortcut;
+
+    Ui::Dialog *ui;
 
 public:
     /**
@@ -92,15 +92,15 @@ public:
 
     ~Dialog();
 
-    void keyPressEvent( QKeyEvent *e );
-    
-    void send( unsigned char b1, unsigned char b2, unsigned char b3 );
-
     /**
      * @brief 編集結果のノート情報を記録した文字列を取得する
      * @return 音符情報を記録した文字列
      */
     const std::string getEventText();
+
+    void keyPressEvent( QKeyEvent *e );
+    
+    void send( unsigned char b1, unsigned char b2, unsigned char b3 );
 
 signals:
     /**
@@ -109,6 +109,11 @@ signals:
     void doRepaint();
 
 private slots:
+    /**
+     * @brief ソングポジションの位置を初期化する
+     */
+    void initSongPosition();
+
     void on_pushButtonInputToggle_clicked();
 
     void on_toolButtonNote001_toggled(bool checked);
@@ -136,12 +141,29 @@ private slots:
      */
     void onRepaintRequired();
 
-    /**
-     * @brief ソングポジションの位置を初期化する
-     */
-    void initSongPosition();
-
 private:
+    /**
+     * @brief ソングポジションに一番近い音符のノート番号を取得する
+     * @param items 音符のリスト
+     * @param songPosition ソングポジション
+     * @return ノート番号
+     */
+    int findNearestNoteNumber( std::map<VSQ_NS::tick_t, PianorollItem *> *items, VSQ_NS::tick_t songPosition );
+
+    /**
+     * @brief 現在のエディタウィンドウのソングポジションを取得する
+     * @param timesigList 拍子情報
+     * @param musicalPartOffset オフセット
+     * @return ソングポジション
+     */
+    VSQ_NS::tick_t getSongPosition( VSQ_NS::TimesigList *timesigList, VSQ_NS::tick_t musicalPartOffset );
+
+    /**
+     * @brief ツールボタンのショートカットキーと、対応するコンポーネントの紐付けを初期化。
+     * toolButtonShortcut フィールドの値を初期化する
+     */
+    void initToolButtonShortcut();
+
     /**
      * MIDI 入力開始が要求されたとき呼ばれる
      * @param channel MIDI 入力ポート番号
@@ -154,32 +176,10 @@ private:
     void inputStopRequired();
 
     /**
-     * @brief 現在のエディタウィンドウのソングポジションを取得する
-     * @param timesigList 拍子情報
-     * @param musicalPartOffset オフセット
-     * @return ソングポジション
-     */
-    VSQ_NS::tick_t getSongPosition( VSQ_NS::TimesigList *timesigList, VSQ_NS::tick_t musicalPartOffset );
-
-    /**
-     * @brief ソングポジションに一番近い音符のノート番号を取得する
-     * @param items 音符のリスト
-     * @param songPosition ソングポジション
-     * @return ノート番号
-     */
-    int findNearestNoteNumber( std::map<VSQ_NS::tick_t, PianorollItem *> *items, VSQ_NS::tick_t songPosition );
-
-    /**
      * @brief ソングポジションを現在のクオンタイズに基づいて移動する
      * @param isForward 曲末方向へ移動する場合は true を、曲頭方向へ移動する場合は false を設定する
      */
     void moveSongPosition( bool isForward );
-
-    /**
-     * @brief ツールボタンのショートカットキーと、対応するコンポーネントの紐付けを初期化。
-     * toolButtonShortcut フィールドの値を初期化する
-     */
-    void initToolButtonShortcut();
 };
 
 #endif // DIALOG_H

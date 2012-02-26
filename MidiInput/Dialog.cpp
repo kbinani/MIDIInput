@@ -75,15 +75,6 @@ Dialog::Dialog( const string eventText, const string timesigText, tick_t musical
     QTimer::singleShot( 0, this, SLOT(initSongPosition()) );
 }
 
-void Dialog::initSongPosition()
-{
-    tick_t songPosition = getSongPosition( timesigList, this->musicalPartOffset );
-    int noteNumber = findNearestNoteNumber( items, songPosition );
-    ui->pianoroll->ensureNoteVisible( songPosition, 480, noteNumber );
-    ui->pianoroll->setSongPosition( songPosition, false );
-    emit doRepaint();
-}
-
 Dialog::~Dialog()
 {
     inputStopRequired();
@@ -100,6 +91,114 @@ Dialog::~Dialog()
     delete mutex;
 }
 
+int Dialog::findNearestNoteNumber( map<tick_t, PianorollItem *> *items, tick_t songPosition )
+{
+    map<tick_t, PianorollItem *>::iterator i;
+    for( i = items->begin(); i != items->end(); i++ ){
+        tick_t pos = i->first;
+        PianorollItem *item = i->second;
+        if( pos <= songPosition && songPosition < pos + item->length ){
+            return item->noteNumber;
+        }
+    }
+    return 60;
+}
+
+const string Dialog::getEventText()
+{
+    Parser parser;
+    return parser.toString( items );
+}
+
+tick_t Dialog::getSongPosition( TimesigList *timesigList, tick_t musicalPartOffset )
+{
+    QString songPositionString = QString::fromStdString( Robot::getSongPosition() );
+    QStringList parameters = songPositionString.split( " : " );
+    if( 3 <= parameters.size() ){
+        int preMeasure = Robot::getPreMeasure();
+        int barCount = parameters[0].toInt() + (preMeasure - 1);
+        int beat = parameters[1].toInt();
+        int tick = parameters[2].toInt();
+
+        int localTickAtBar = timesigList->getClockFromBarCount( barCount );
+        Timesig timesig = timesigList->getTimesigAt( localTickAtBar );
+        int tickPerBeat = 480 * 4 / timesig.denominator;
+        tick_t songPosition = localTickAtBar - musicalPartOffset;
+        songPosition += (beat - 1) * tickPerBeat;
+        songPosition += tick;
+        return songPosition;
+    }else{
+        return 0;
+    }
+}
+
+void Dialog::initSongPosition()
+{
+    tick_t songPosition = getSongPosition( timesigList, this->musicalPartOffset );
+    int noteNumber = findNearestNoteNumber( items, songPosition );
+    ui->pianoroll->ensureNoteVisible( songPosition, 480, noteNumber );
+    ui->pianoroll->setSongPosition( songPosition, false );
+    emit doRepaint();
+}
+
+void Dialog::initToolButtonShortcut()
+{
+    map<Qt::Key, string> *shortcutSetting = Settings::getToolButtonShortcut();
+    toolButtonShortcut.clear();
+    map<Qt::Key, string>::iterator i;
+    for( i = shortcutSetting->begin(); i != shortcutSetting->end(); i++ ){
+        Qt::Key key = i->first;
+        QString name = QString::fromStdString( i->second );
+        QToolButton *button = findChild<QToolButton *>( name );
+        if( button ){
+            toolButtonShortcut.insert( make_pair( key, button ) );
+            ostringstream oss;
+            oss << "shortcut: " << (char)key;
+            button->setToolTip( oss.str().c_str() );
+        }
+    }
+}
+
+void Dialog::inputStartRequired( int channel )
+{
+    this->channel = channel;
+    MidiInput::setReceiver( this );
+    MidiInput::start( this->channel );
+}
+
+void Dialog::inputStopRequired()
+{
+    MidiInput::stop();
+    MidiInput::setReceiver( NULL );
+}
+
+void Dialog::keyPressEvent( QKeyEvent *e )
+{
+    int key = e->key();
+    if( key == Qt::Key_Left || key == Qt::Key_Right ){
+        moveSongPosition( key == Qt::Key_Right );
+    }else{
+        map<Qt::Key, QToolButton *>::iterator i = toolButtonShortcut.find( (Qt::Key)key );
+        if( i != toolButtonShortcut.end() ){
+            i->second->toggle();
+        }
+    }
+}
+
+void Dialog::moveSongPosition( bool isForward )
+{
+    int delta = isForward ? 1 : -1;
+    tick_t songPosition = ui->pianoroll->getSongPosition();
+    tick_t newSongPosition = songPosition + delta * stepUnit;
+    if( newSongPosition < 0 ){
+        newSongPosition = 0;
+    }
+    if( newSongPosition != songPosition ){
+        ui->pianoroll->setSongPosition( newSongPosition, autoScroll );
+        ui->pianoroll->repaint();
+    }
+}
+
 void Dialog::on_pushButtonInputToggle_clicked()
 {
     if( inputStarted ){
@@ -114,19 +213,6 @@ void Dialog::on_pushButtonInputToggle_clicked()
     }
     inputStarted = !inputStarted;
     ui->comboBox->setEnabled( !inputStarted );
-}
-
-void Dialog::keyPressEvent( QKeyEvent *e )
-{
-    int key = e->key();
-    if( key == Qt::Key_Left || key == Qt::Key_Right ){
-        moveSongPosition( key == Qt::Key_Right );
-    }else{
-        map<Qt::Key, QToolButton *>::iterator i = toolButtonShortcut.find( (Qt::Key)key );
-        if( i != toolButtonShortcut.end() ){
-            i->second->toggle();
-        }
-    }
 }
 
 void Dialog::on_toolButtonNote001_toggled( bool checked )
@@ -209,17 +295,9 @@ void Dialog::on_toolButtonRest016_toggled(bool checked)
     }
 }
 
-void Dialog::inputStartRequired( int channel )
+void Dialog::onRepaintRequired()
 {
-    this->channel = channel;
-    MidiInput::setReceiver( this );
-    MidiInput::start( this->channel );
-}
-
-void Dialog::inputStopRequired()
-{
-    MidiInput::stop();
-    MidiInput::setReceiver( NULL );
+    ui->pianoroll->repaint();
 }
 
 void Dialog::send( unsigned char b1, unsigned char b2, unsigned char b3 )
@@ -260,83 +338,5 @@ void Dialog::send( unsigned char b1, unsigned char b2, unsigned char b3 )
         }
         ui->pianoroll->setSongPosition( position + length, isRest );
         emit doRepaint();
-    }
-}
-
-void Dialog::onRepaintRequired()
-{
-    ui->pianoroll->repaint();
-}
-
-const string Dialog::getEventText()
-{
-    Parser parser;
-    return parser.toString( items );
-}
-
-tick_t Dialog::getSongPosition( TimesigList *timesigList, tick_t musicalPartOffset )
-{
-    QString songPositionString = QString::fromStdString( Robot::getSongPosition() );
-    QStringList parameters = songPositionString.split( " : " );
-    if( 3 <= parameters.size() ){
-        int preMeasure = Robot::getPreMeasure();
-        int barCount = parameters[0].toInt() + (preMeasure - 1);
-        int beat = parameters[1].toInt();
-        int tick = parameters[2].toInt();
-
-        int localTickAtBar = timesigList->getClockFromBarCount( barCount );
-        Timesig timesig = timesigList->getTimesigAt( localTickAtBar );
-        int tickPerBeat = 480 * 4 / timesig.denominator;
-        tick_t songPosition = localTickAtBar - musicalPartOffset;
-        songPosition += (beat - 1) * tickPerBeat;
-        songPosition += tick;
-        return songPosition;
-    }else{
-        return 0;
-    }
-}
-
-int Dialog::findNearestNoteNumber( map<tick_t, PianorollItem *> *items, tick_t songPosition )
-{
-    map<tick_t, PianorollItem *>::iterator i;
-    for( i = items->begin(); i != items->end(); i++ ){
-        tick_t pos = i->first;
-        PianorollItem *item = i->second;
-        if( pos <= songPosition && songPosition < pos + item->length ){
-            return item->noteNumber;
-        }
-    }
-    return 60;
-}
-
-void Dialog::moveSongPosition( bool isForward )
-{
-    int delta = isForward ? 1 : -1;
-    tick_t songPosition = ui->pianoroll->getSongPosition();
-    tick_t newSongPosition = songPosition + delta * stepUnit;
-    if( newSongPosition < 0 ){
-        newSongPosition = 0;
-    }
-    if( newSongPosition != songPosition ){
-        ui->pianoroll->setSongPosition( newSongPosition, autoScroll );
-        ui->pianoroll->repaint();
-    }
-}
-
-void Dialog::initToolButtonShortcut()
-{
-    map<Qt::Key, string> *shortcutSetting = Settings::getToolButtonShortcut();
-    toolButtonShortcut.clear();
-    map<Qt::Key, string>::iterator i;
-    for( i = shortcutSetting->begin(); i != shortcutSetting->end(); i++ ){
-        Qt::Key key = i->first;
-        QString name = QString::fromStdString( i->second );
-        QToolButton *button = findChild<QToolButton *>( name );
-        if( button ){
-            toolButtonShortcut.insert( make_pair( key, button ) );
-            ostringstream oss;
-            oss << "shortcut: " << (char)key;
-            button->setToolTip( oss.str().c_str() );
-        }
     }
 }

@@ -42,21 +42,16 @@ PianorollKeyboard::~PianorollKeyboard()
     delete [] keyNames;
 }
 
-void PianorollKeyboard::paintEvent( QPaintEvent *e )
-{
-    QPainter p( this );
-    this->paintKeyboard( &p );
-}
-
-void PianorollKeyboard::setPianoroll( Pianoroll *pianoroll )
-{
-    this->pianoroll = pianoroll;
-}
-
 void PianorollKeyboard::notifyVerticalScroll( int y )
 {
     this->top = -y;
     this->repaint();
+}
+
+void PianorollKeyboard::paintEvent( QPaintEvent *e )
+{
+    QPainter p( this );
+    this->paintKeyboard( &p );
 }
 
 void PianorollKeyboard::paintKeyboard( QPainter *g ){
@@ -93,6 +88,11 @@ void PianorollKeyboard::paintKeyboard( QPainter *g ){
     // 鍵盤とピアノロール本体との境界線
     g->setPen( QColor( 212, 212, 212 ) );
     g->drawLine( width() - 1, 0, width() - 1, height() );
+}
+
+void PianorollKeyboard::setPianoroll( Pianoroll *pianoroll )
+{
+    this->pianoroll = pianoroll;
 }
 
 void PianorollKeyboard::setTrackHeight( int trackHeight )

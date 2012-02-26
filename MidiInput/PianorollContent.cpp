@@ -48,25 +48,70 @@ int PianorollContent::getMinimumHeight()
     return this->trackHeight * (NOTE_MAX - NOTE_MIN + 1);
 }
 
-void PianorollContent::paintEvent( QPaintEvent * ){
-    int minimumHeight = this->getMinimumHeight();
-    if( this->minimumHeight() != minimumHeight ){
-        this->setMinimumHeight( minimumHeight );
-    }
-    QPainter p( this );
+int PianorollContent::getNoteModuration( int noteNumber )
+{
+    return ((noteNumber % 12) + 12) % 12;
+}
 
-    QRect visibleArea = this->getPaintArea();
+int PianorollContent::getNoteNumberFromY( int y, int trackHeight )
+{
+    return NOTE_MAX - (int)::floor( (double)(y / trackHeight) );
+}
 
-    paintBackground( &p, visibleArea );
-    paintMeasureLines( &p, visibleArea );
-    if( mutex ){
-        mutex->lock();
-        paintItems( &p, visibleArea );
-        mutex->unlock();
+int PianorollContent::getNoteOctave( int noteNumber )
+{
+    int modura = getNoteModuration( noteNumber );
+    return (noteNumber - modura) / 12 - 2;
+}
+
+QRect PianorollContent::getPaintArea()
+{
+    QScrollArea *scroll = (QScrollArea *)this->parent();
+    if( scroll ){
+        QRect rect = scroll->childrenRect();
+        int x = -rect.x() - 1;
+        int y = -rect.y() - 1;
+        int width = scroll->width() + 2;
+        int height = scroll->height() + 2;
+        return QRect( x, y, width, height );
     }else{
-        paintItems( &p, visibleArea );
+        return QRect( -1, -1, this->width() + 2, this->height() + 2 );
     }
-    paintSongPosition( &p, visibleArea );
+}
+
+tick_t PianorollContent::getSongPosition()
+{
+    return songPosition;
+}
+
+double PianorollContent::getTickFromX( int x )
+{
+    return (x - 5) / pixelPerTick;
+}
+
+int PianorollContent::getTrackHeight()
+{
+    return trackHeight;
+}
+
+QRect PianorollContent::getVisibleArea()
+{
+    QRect rect = this->getPaintArea();
+    return QRect( rect.x() + 1, rect.y() + 1, rect.width() - 2, rect.height() - 2 );
+}
+
+int PianorollContent::getXFromTick( tick_t tick ){
+    return (int)(tick * pixelPerTick) + 5;
+}
+
+int PianorollContent::getYFromNoteNumber( int noteNumber, int trackHeight ){
+    return (NOTE_MAX - noteNumber) * trackHeight;
+}
+
+void PianorollContent::mouseMoveEvent( QMouseEvent *e )
+{
+    this->pianoroll->repaint();
+    QWidget::mouseMoveEvent( e );
 }
 
 void PianorollContent::paintBackground( QPainter *g, QRect visibleArea ){
@@ -105,6 +150,27 @@ void PianorollContent::paintBackground( QPainter *g, QRect visibleArea ){
     }
 }
 
+void PianorollContent::paintEvent( QPaintEvent * ){
+    int minimumHeight = this->getMinimumHeight();
+    if( this->minimumHeight() != minimumHeight ){
+        this->setMinimumHeight( minimumHeight );
+    }
+    QPainter p( this );
+
+    QRect visibleArea = this->getPaintArea();
+
+    paintBackground( &p, visibleArea );
+    paintMeasureLines( &p, visibleArea );
+    if( mutex ){
+        mutex->lock();
+        paintItems( &p, visibleArea );
+        mutex->unlock();
+    }else{
+        paintItems( &p, visibleArea );
+    }
+    paintSongPosition( &p, visibleArea );
+}
+
 void PianorollContent::paintItems( QPainter *g, QRect visibleArea ){
     if( items == NULL ){
         return;
@@ -140,37 +206,6 @@ void PianorollContent::paintItems( QPainter *g, QRect visibleArea ){
             }
         }
     }
-}
-
-void PianorollContent::mouseMoveEvent( QMouseEvent *e )
-{
-    this->pianoroll->repaint();
-    QWidget::mouseMoveEvent( e );
-}
-
-void PianorollContent::setItems( map<tick_t, PianorollItem *> *items ){
-    this->items = items;
-}
-
-void PianorollContent::setTimesigList( TimesigList *timesigList )
-{
-    MeasureLineIterator *previous = measureLineIterator;
-    this->timesigList = timesigList;
-    measureLineIterator = new MeasureLineIterator( this->timesigList );
-    if( previous ){
-        delete previous;
-    }
-}
-
-void PianorollContent::setTrackHeight( int trackHeight )
-{
-    this->trackHeight = trackHeight;
-    this->setMinimumHeight( this->getMinimumHeight() );
-}
-
-int PianorollContent::getTrackHeight()
-{
-    return trackHeight;
 }
 
 void PianorollContent::paintMeasureLines( QPainter *g, QRect visibleArea )
@@ -212,54 +247,34 @@ void PianorollContent::paintSongPosition( QPainter *g, QRect visibleArea )
     g->drawLine( x + 1, visibleArea.top(), x + 1, visibleArea.bottom() );
 }
 
-QRect PianorollContent::getVisibleArea()
-{
-    QRect rect = this->getPaintArea();
-    return QRect( rect.x() + 1, rect.y() + 1, rect.width() - 2, rect.height() - 2 );
+void PianorollContent::setItems( map<tick_t, PianorollItem *> *items ){
+    this->items = items;
 }
 
-QRect PianorollContent::getPaintArea()
+void PianorollContent::setMusicalPartOffset( tick_t musicalPartOffset )
 {
-    QScrollArea *scroll = (QScrollArea *)this->parent();
-    if( scroll ){
-        QRect rect = scroll->childrenRect();
-        int x = -rect.x() - 1;
-        int y = -rect.y() - 1;
-        int width = scroll->width() + 2;
-        int height = scroll->height() + 2;
-        return QRect( x, y, width, height );
-    }else{
-        return QRect( -1, -1, this->width() + 2, this->height() + 2 );
+    this->musicalPartOffset = musicalPartOffset;
+}
+
+void PianorollContent::setMutex( QMutex *mutex )
+{
+    this->mutex = mutex;
+}
+
+void PianorollContent::setTimesigList( TimesigList *timesigList )
+{
+    MeasureLineIterator *previous = measureLineIterator;
+    this->timesigList = timesigList;
+    measureLineIterator = new MeasureLineIterator( this->timesigList );
+    if( previous ){
+        delete previous;
     }
 }
 
-int PianorollContent::getXFromTick( tick_t tick ){
-    return (int)(tick * pixelPerTick) + 5;
-}
-
-int PianorollContent::getYFromNoteNumber( int noteNumber, int trackHeight ){
-    return (NOTE_MAX - noteNumber) * trackHeight;
-}
-
-int PianorollContent::getNoteNumberFromY( int y, int trackHeight )
+void PianorollContent::setTrackHeight( int trackHeight )
 {
-    return NOTE_MAX - (int)::floor( (double)(y / trackHeight) );
-}
-
-double PianorollContent::getTickFromX( int x )
-{
-    return (x - 5) / pixelPerTick;
-}
-
-int PianorollContent::getNoteModuration( int noteNumber )
-{
-    return ((noteNumber % 12) + 12) % 12;
-}
-
-int PianorollContent::getNoteOctave( int noteNumber )
-{
-    int modura = getNoteModuration( noteNumber );
-    return (noteNumber - modura) / 12 - 2;
+    this->trackHeight = trackHeight;
+    this->setMinimumHeight( this->getMinimumHeight() );
 }
 
 void PianorollContent::setPianoroll( Pianoroll *pianoroll )
@@ -273,19 +288,4 @@ void PianorollContent::setSongPosition( tick_t songPosition )
     if( 0 <= x && x < width() ){
         this->songPosition = songPosition;
     }
-}
-
-tick_t PianorollContent::getSongPosition()
-{
-    return songPosition;
-}
-
-void PianorollContent::setMutex( QMutex *mutex )
-{
-    this->mutex = mutex;
-}
-
-void PianorollContent::setMusicalPartOffset( tick_t musicalPartOffset )
-{
-    this->musicalPartOffset = musicalPartOffset;
 }

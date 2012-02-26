@@ -90,16 +90,16 @@ private:
 MidiInputReceiver *MidiInputWin32WinMM::receiver = NULL;
 HMIDIIN MidiInputWin32WinMM::deviceHandle = NULL;
 
-void MidiInput::setReceiver( MidiInputReceiver *aReceiver ){
-    MidiInputWin32WinMM::setReceiver( aReceiver );
-}
-
 int MidiInput::getDeviceCount(){
     return MidiInputWin32WinMM::getDeviceCount();
 }
 
 const QString MidiInput::getDeviceName( int index ){
     return MidiInputWin32WinMM::getDeviceName( index );
+}
+
+void MidiInput::setReceiver( MidiInputReceiver *aReceiver ){
+    MidiInputWin32WinMM::setReceiver( aReceiver );
 }
 
 void MidiInput::start( int index ){

@@ -21,8 +21,8 @@ class DialogRunner : public QThread
 {
 private:
     std::string eventText;
-    std::string timesigText;
     VSQ_NS::tick_t musicalPartOffset;
+    std::string timesigText;
 
 public:
     /**
