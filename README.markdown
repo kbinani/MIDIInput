@@ -35,7 +35,7 @@ building vsq.lib using Visual C++ command prompt.
 building MidiInput.dll using Visual C++ command prompt.
 
     git clone git://github.com/kbinani/MIDIInput.git
-    cd MIDIInput/MidiInput
+    cd MIDIInput\MidiInput
     mkdir build
     qmake MidiInput.pro -o build
     cd build
@@ -43,8 +43,8 @@ building MidiInput.dll using Visual C++ command prompt.
 
 building luavsq.lua
 
-    svn co http://svn.sourceforge.jp/svnroot/cadencii/luavsq
-    cd luavsq\trunk\tool
+    git clone git://github.com/kbinani/luavsq.git
+    cd luavsq\tool
     nmake
 
 collecting release files
